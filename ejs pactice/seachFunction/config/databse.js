@@ -6,5 +6,5 @@ const db = mysql.createPool({
     password:process.env.password,
     database:process.env.database
 });
-
+if(!db) console.log("db not connected");
 module.exports = db;
