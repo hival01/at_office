@@ -1,29 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>users pagination</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>filtered from</title>
     <link rel="stylesheet" href="/style.css">
+
 </head>
-
 <body>
-    <h2>users list</h2>
-
-    <form action="/search" method="post">
-        <p>check the box for and</p>
-        <p>unchecked for or</p>
-        <input type="checkbox" name="andor" id="andor">
-        <input type="search" name="queryString" placeholder="search here">
-        <button type="submit">Search</button>
-    </form>
-
-    <%- include('partials/pagination') %>
-        <br>
-        <table>
+    <table>
             <tr>
-                <th> <a href="/?page=1&sort=user_id&order=asc"> ↑ </a>
+                <th> 
+                    <a href="/?page=1&sort=user_id&order=asc"> ↑ </a>
                     <a href="/?page=1&sort=user_id&order=desc">↓</a>
                     ID  
                 </th>
@@ -54,39 +42,36 @@
                 </th>
             </tr>
 
-            <% users.forEach( user=> { %>
+            <% dbdata.forEach( data=> { %>
                 <tr>
                     <td>
-                        <%= user.user_id %>
+                        <%= data.user_id %>
                     </td>
                     <td>
-                        <%= user.first_name %>
+                        <%= data.first_name %>
                     </td>
                     <td>
-                        <%= user.last_name %>
+                        <%= data.last_name %>
                     </td>
                     <td>
-                        <%= user.phone_no %>
+                        <%= data.phone_no %>
                     </td>
                     <td>
-                        <%= user.email %>
+                        <%= data.email %>
                     </td>
                     <td>
-                        <%= user.address %>
+                        <%= data.address %>
                     </td>
                     <td>
-                        <%= user.city %>
+                        <%= data.city %>
                     </td>
 
                     <td>
-                        <%= user.gender %>
+                        <%= data.gender %>
                     </td>
                 </tr>
 
                 <% })%>
         </table>
-
-        <%- include('partials/pagination') %>
 </body>
-
 </html>
