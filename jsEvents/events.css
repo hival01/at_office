@@ -1,0 +1,12 @@
+ table, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+td{
+    width: 150px;
+    height: 150px;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    justify-content: center;
+}

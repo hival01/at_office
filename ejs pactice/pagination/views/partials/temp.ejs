@@ -1,0 +1,27 @@
+<div class="pagination">
+    <% if(currentPage>1){ %>
+        <a href="/?page=<%= currentPage -1 %>">prev</a>
+        <% } %>
+
+            <% if(pages[0]>1 ) { %>
+                <a href="/?page=1">1</a>
+                <span>...</span>
+                <% } %>
+
+                    <% pages.forEach(p=>{ %>
+                        <a href="/?page=<%= p%>" class="<%= currentPage === p ? 'active' :'' %>">
+                            <%= p%>
+                        </a>
+                        <% } %>
+
+                            <% if(pages[pages.length -1 ] <totalPages){ %>
+                                <span>...</span>
+                                <a href="/?page=<%= totalPages %>">
+                                    <%= totalPages %>
+                                </a>
+                                <%}%>
+
+                                    <% if(currentPage < totalPages) { %>
+                                        <a href="/?page=<%= currentPage + 1 %>"> next ==></a>
+                                        <% }%>
+</div>

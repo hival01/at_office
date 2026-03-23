@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Job application form</title>
+    <link rel="stylesheet" href="/css/form.css" />
+  </head>
+  <body>
+    <h1>Job Application Form</h1>
+
+    <form method="POST" action="/user">
+      <fieldset>
+        <legend>Basic Details</legend>
+
+        <table>
+          <tr>
+            <td>
+              <label for="first_name">First Name</label>
+              <input type="text" id="first_name" name="first_name" />
+              <br /><br />
+              <label for="last_name">Last Name</label>
+              <input type="text" id="last_name" name="last_name" />
+
+              <br /><br />
+              <label for="designation"> Designation</label>
+              <input type="text" name="designation" id="designation" />
+
+              <br /><br />
+              <label for="email">Email</label>
+              <input type="text" id="email" name="email" />
+
+              <br /><br />
+              <label for="ph_no">Phone Number</label>
+              <input type="text" id="ph_no" name="ph_no" />
+
+              <br /><br />
+              Gender
+              <input
+                type="radio"
+                id="male"
+                name="gender"
+                value="male"
+                checked
+              />
+              <label for="male">Male</label>
+
+              <input type="radio" id="female" name="gender" value="female" />
+              <label for="female">female</label>
+
+              <br /><br />
+              <label for="maritalstatus">Relationship Status</label>
+              <select
+                name="maritalstatus"
+                id="maritalstatus"
+                style="font-size: medium"
+              >
+                <option value="single" selected>single</option>
+                <option value="married">married</option>
+                <option value="other">Don't prefer to say</option>
+              </select>
+            </td>
+            <td>
+              <label for="address1">Address 1</label>
+              <input
+                type="text"
+                name="address1"
+                id="address1"
+                style="width: 300px; height: 80px"
+              />
+
+              <br /><br />
+              <label for="address2">Address 2</label>
+              <input
+                type="text"
+                name="address2"
+                id="address2"
+                style="width: 300px"
+              />
+
+              <br /><br />
+
+              <label for="city">city</label>
+              <input
+                list="citylist"
+                id="city"
+                style="font-size: medium"
+                name="city"
+              />
+              <datalist id="citylist">
+                <option value="surat"></option>
+                <option value="ahmedabad"></option>
+                <option value="gandhinagar"></option>
+              </datalist>
+
+              <br /><br />
+              <label for="state">State</label>
+              <input list="statelist" id="state" name="state" />
+              <datalist id="statelist">
+                <option value="gujarat"></option>
+                <option value="maharastra"></option>
+                <option value="rajastan"></option>
+              </datalist>
+
+              <br /><br />
+              <label for="zip">Zip Code</label>
+              <input
+                type="text"
+                id="zip"
+                name="zip"
+                maxlength="6"
+                minlength="6"
+              />
+              `
+              <br /><br />
+              <label for="dob">Date of Birth</label>
+              <input type="date" id="dob" name="dob" />
+            </td>
+          </tr>
+        </table>
+      </fieldset>
+
+      <fieldset>
+        <legend>Education Details</legend>
+
+        <table id="educationtable">
+          <tr>
+            <td colspan="2" id="add_edu">+</td>
+            <td colspan="2" id="remove_edu">-</td>
+          </tr>
+          <tr>
+            <th>course</th>
+            <th>passing year</th>
+            <th>uni / board</th>
+            <th>result</th>
+          </tr>
+
+          <!-- 1st row -->
+          <tbody id="education">
+            <tr>
+              <td>
+                <input type="text" id="course1" name="course[]" />
+              </td>
+              <td>
+                <input type="text" id="passingyear1" name="passingyear[]" />
+              </td>
+              <td>
+                <input type="text" id="uni1" name="uni[]" />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  id="result1"
+                  name="result[]"
+                  placeholder="0-100"
+                />
+              </td>
+            </tr>
+
+            <!-- 2nd row -->
+            <!-- <tr>
+              <td>
+                <input type="text" id="course2" name="course[]" />
+              </td>
+              <td>
+                <input type="text" id="passingyear2" name="passingyear[]" />
+              </td>
+              <td>
+                <input type="text" id="uni2" name="uni[]" />
+              </td>
+              <td>
+                <input type="text" id="result2" name="result[]" placeholder="0-100" />
+              </td>
+            </tr> -->
+          </tbody>
+        </table>
+      </fieldset>
+
+      <fieldset>
+        <legend>Work Experience</legend>
+
+        <table>
+          <tr>
+            <td colspan="4" id="add_exp">+</td>
+            <td colspan="4" id="remove_exp">-</td>
+          </tr>
+          <tr>
+            <th>Company Name</th>
+            <th>From date</th>
+            <th>To date</th>
+            <th>Annual package</th>
+            <th>Reason to leave</th>
+            <th>ref. Contact no</th>
+            <th>ref. Contact name</th>
+            <th>ref. Contact relation</th>
+          </tr>
+
+          <tbody id="experience">
+            <!-- 1st row -->
+
+            <tr>
+              <td>
+                <input
+                  type="text"
+                  name="comp_name[]"
+                  id="comp_name1"
+                  placeholder="eSparkBiz"
+                />
+              </td>
+              <td><input type="date" name="from_date[]" id="from_date1" /></td>
+              <td><input type="date" name="to_date[]" id="to_date1" /></td>
+              <td>
+                <input
+                  type="text"
+                  placeholder="1000000"
+                  name="package[]"
+                  id="package1"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  name="reason_to_leave[]"
+                  id="reason_to_leave1"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  id="contact_no1"
+                  name="contact_no[]"
+                  placeholder="9876543219"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  name="name[]"
+                  id="name1"
+                  placeholder="hival patel"
+                />
+              </td>
+
+              <td>
+                <input
+                  type="text"
+                  name="relation[]"
+                  id="relation1"
+                  placeholder="friend / brother"
+                />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </fieldset>
+
+      <fieldset>
+        <legend>Language Known</legend>
+
+        <table>
+          <tr>
+            <td colspan="2" id="add_lang">+</td>
+            <td colspan="2" id="remove_lang">-</td>
+          </tr>
+
+          <tr>
+            <th>Language</th>
+            <th>Read</th>
+            <th>Write</th>
+            <th>Speak</th>
+          </tr>
+
+          <tbody id="language"></tbody>
+        </table>
+      </fieldset>
+
+      <fieldset>
+        <legend>Technology Known</legend>
+
+        <table>
+          <tr>
+            <td colspan="2" id="add_tech">+</td>
+            <td colspan="2" id="remove_tech">-</td>
+          </tr>
+
+          <tr>
+            <th>Technology</th>
+            <th>Beginner</th>
+            <th>Intermediate</th>
+            <th>Expert</th>
+          </tr>
+
+          <tbody id="technology"></tbody>
+        </table>
+      </fieldset>
+
+      <fieldset>
+        <legend>Preferences</legend>
+
+        <table>
+          <tr>
+            <td>
+              <label for="preferred_location">Preferred Location</label>
+
+              <select id="preferred_location" name="preferred_location">
+                <option value="">Select Location</option>
+              </select>
+            </td>
+
+            <td>
+              <label for="notice_period">Notice Period</label>
+
+              <input
+                type="text"
+                id="notice_period"
+                name="notice_period"
+                placeholder="30 days"
+              />
+              <br /><br />
+              <label for="expected_ctc">Expected CTC</label>
+
+              <input
+                type="number"
+                id="expected_ctc"
+                name="expected_ctc"
+                placeholder="600000"
+              />
+              <br /><br />
+
+              <label for="current_ctc">Current CTC</label>
+
+              <input
+                type="number"
+                id="current_ctc"
+                name="current_ctc"
+                placeholder="500000"
+              />
+            </td>
+
+            <td>
+              <label for="department">Department</label>
+
+              <select id="department" name="department">
+                <option value="">Select Department</option>
+              </select>
+            </td>
+          </tr>
+        </table>
+      </fieldset>
+
+      <input type="submit" value="submit form" />
+
+      <input type="reset" value="reset form" />
+    </form>
+
+    <script src="/js/form.js"></script>
+  </body>
+</html>

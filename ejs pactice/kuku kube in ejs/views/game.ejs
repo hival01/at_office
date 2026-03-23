@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Kuku Kube Clone</title>
+    <link rel="stylesheet" href="/css/game.css" />
+  </head>   
+  <body>
+    <div class="game-container">
+      <div class="header">
+        <div>Score : <span id="score"> 0</span></div>
+        <div>Time : <span id="time"></span>s</div>
+        <div>High : <span id="highScore">0</span></div>
+
+        <label for="time-input">Enter time for game</label>
+        <input
+          type="number"
+          id="time-input"
+          name="time-input"
+          min="1"
+          max="300"
+          value="10"
+        />
+      </div>
+      <div id="grid"></div>
+      <button onclick="startGame()">Start Game</button>
+    </div>
+    <script src="/js/game2.js"></script>
+  </body>
+</html>

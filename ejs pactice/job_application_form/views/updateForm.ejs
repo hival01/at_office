@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Job application form</title>
+    <link rel="stylesheet" href="/css/form.css" />
+  </head>
+  <body>
+    <h1>Job Application Form</h1>
+
+    <% if (typeof updated !== 'undefined' && updated) { %>
+    <p class="form-success-message" role="status">
+      Your form has been updated successfully.
+    </p>
+    <% } %>
+
+    <form method="POST" action="/user/update/<%= data.applicant_id %>">
+      <fieldset>
+        <legend>Basic Details</legend>
+
+        <table>
+          <tr>
+            <td>
+              <label for="first_name">First Name</label>
+              <input type="text" id="first_name" name="first_name" value="<%= data.basic_details[0].first_name %>"/>
+              <br /><br />
+              <label for="last_name">Last Name</label>
+              <input type="text" id="last_name" name="last_name" value="<%= data.basic_details[0].last_name %>" />
+
+              <br /><br />
+              <label for="designation"> Designation</label>
+              <input type="text" name="designation" id="designation" value="<%= data.basic_details[0].Designation %> "/>
+
+              <br /><br />
+              <label for="email">Email</label>
+              <input type="text" id="email" name="email" value="<%= data.basic_details[0].email %>"/>
+
+              <br /><br />
+              <label for="ph_no">Phone Number</label>
+              <input type="text" id="ph_no" name="ph_no" value="<%= data.basic_details[0].phone_no %>" />
+
+              <br /><br />
+              Gender
+              <input
+                type="radio"
+                id="male"
+                name="gender"
+               
+                value="male"
+                 <%= data.basic_details[0].gender=="male"? "checked" :"" %>
+              />
+              <label for="male">Male</label>
+
+              <input type="radio" id="female" name="gender" value="female" <%= data.basic_details[0].gender=="female"? "checked" :"" %>/>
+              <label for="female">female</label>
+
+              <br /><br />
+              <label for="maritalstatus">Relationship Status</label>
+              <select
+                name="maritalstatus"
+                id="maritalstatus"
+                style="font-size: medium"
+
+              >
+                <option value="single" <%= data.basic_details[0].relationship_status === "single" ? "selected" :"" %>>single</option>
+                <option value="married" <%= data.basic_details[0].relationship_status ==="married" ? "selected" :"" %>>married</option>
+                <option value="other" <%= data.basic_details[0].relationship_status ==="other" ? "selected" : "" %> >Don't prefer to say</option>
+              </select>
+            </td>
+            <td>
+              <label for="address1">Address 1</label>
+              <input
+                type="text"
+                name="address1"
+                id="address1"
+                style="width: 300px; height: 80px"
+                value="<%= data.basic_details[0].address1 %>"
+              />
+
+              <br /><br />
+              <label for="address2">Address 2</label>
+              <input
+                type="text"
+                name="address2"
+                id="address2"
+                style="width: 300px"
+                value="<%= data.basic_details[0].address2 %>"
+              />
+
+              <br /><br />
+
+              <label for="city">city</label>
+              <input
+                list="citylist"
+                id="city"
+                style="font-size: medium"
+                name="city"
+                value="<%= data.basic_details[0].city %>"
+              />
+              <datalist id="citylist">
+                <option value="surat"></option>
+                <option value="ahmedabad"></option>
+                <option value="gandhinagar"></option>
+              </datalist>
+
+              <br /><br />
+              <label for="state">State</label>
+              <input list="statelist" id="state" name="state" value="<%= data.basic_details[0].state %>" />
+              <datalist id="statelist">
+                <option value="gujarat"></option>
+                <option value="maharastra"></option>
+                <option value="rajastan"></option>
+              </datalist>
+
+              <br /><br />
+              <label for="zip">Zip Code</label>
+              <input
+                type="text"
+                id="zip"
+                name="zip"
+                maxlength="6"
+                minlength="6"
+                value="<%= data.basic_details[0].zipcode %>"
+              />
+              <br /><br />
+              <label for="dob">Date of Birth</label>
+              <input type="date" id="dob" name="dob" value="<%= data.basic_details[0].dob.toISOString().slice(0,10) %>"/>
+            </td>
+          </tr>
+        </table>
+      </fieldset>
+
+      <fieldset>
+        <legend>Education Details</legend>
+
+        <table id="educationtable">
+          <tr>
+            <td colspan="2" id="add_edu">+</td>
+            <td colspan="2" id="remove_edu">-</td>
+          </tr>
+          <tr>
+            <th>course</th>
+            <th>passing year</th>
+            <th>uni / board</th>
+            <th>result</th>
+          </tr>
+
+          <!-- 1st row -->
+          <tbody id="education">
+              <!-- //here index is auto metically given by js  -->
+              <% data.education.forEach((ele , index)=>{ %>
+                  
+                  <tr>
+                    <td>
+                      <input type="hidden" name="education_id[]" value="<%= ele.education_id %>" />
+                      <input type="text" id="course<%=index+1%>" name="course[]" value="<%= ele.courseName %>" />
+                    </td>
+                    <td>
+                      <input type="text" id="passingyear<%=index+1%>" name="passingyear[]" value="<%= ele.passingYear %>"/>
+                    </td>
+                    <td>
+                      <input type="text" id="uni<%=index+1%>" name="uni[]" value="<%= ele.universityORboard%>"/>
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        id="result<%=index+1%>"
+                        name="result[]"
+                        placeholder="0-100"
+                        value="<%= ele.result%>"
+                      />
+                    </td>
+                  </tr>
+            <%})%>
+          </tbody>
+        </table>
+      </fieldset>
+
+      <fieldset>
+        <legend>Work Experience</legend>
+
+        <table>
+          <tr>
+            <td colspan="4" id="add_exp">+</td>
+            <td colspan="4" id="remove_exp">-</td>
+          </tr>
+          <tr>
+            <th>Company Name</th>
+            <th>From date</th>
+            <th>To date</th>
+            <th>Annual package</th>
+            <th>Reason to leave</th>
+            <th>ref. Contact no</th>
+            <th>ref. Contact name</th>
+            <th>ref. Contact relation</th>
+          </tr>
+
+      <tbody id="experience">
+            <!-- 1st row -->
+            <% data.work_exp.forEach((ele , index)=>{ %>
+
+                <tr>
+                    <td>
+                        <input type="hidden" name="work_exp_id[]" value="<%= ele.work_exp_id %>" />
+                        <input
+                        type="text"
+                        name="comp_name[]"
+                        id="comp_name<%=index+1%>"
+                        placeholder="eSparkBiz"
+                        value="<%= ele.companyName %>"
+                        />
+                    </td>
+                    <td><input type="date" name="from_date[]" id="from_date<%=index+1%>" value="<%= ele.from_date.toISOString().slice(0,10) %>"/></td>
+                    <td><input type="date" name="to_date[]" id="to_date<%=index+1%>" value="<%= ele.to_date.toISOString().slice(0,10) %>"/></td>
+                    <td>
+                        <input
+                        type="text"
+                        placeholder="1000000"
+                        name="package[]"
+                        id="package<%=index+1%>"
+                        value="<%= ele.annual_package %>"
+                        />
+                    </td>
+                    <td>
+                        <input
+                        type="text"
+                        name="reason_to_leave[]"
+                        id="reason_to_leave<%=index+1%>"
+                        value="<%= ele.reasonToLeave %>"
+                        />
+                    </td>
+                    <td>
+                        <input
+                        type="text"
+                        id="contact_no<%=index+1%>"
+                        name="contact_no[]"
+                        placeholder="9876543919"
+                        value="<%= ele.ref_contact_no %>"
+                        />
+                    </td>
+                    <td>
+                        <input
+                        type="text"
+                        name="name[]"
+                        id="name<%=index+1%>"
+                        placeholder="hival patel"
+                        value="<%= ele.ref_contact_name%>"
+                        />
+                    </td>
+                    
+                    <td>
+                        <input
+                        type="text"
+                        name="relation[]"
+                        id="relation<%=index+1%>"
+                        placeholder="friend / brother"
+                        value="<%= ele.ref_contact_relation %>"
+                        />
+                    </td>
+                </tr>
+                <% }) %>
+          </tbody>
+        </table>
+      </fieldset>
+
+      <fieldset>
+        <legend>Language Known</legend>
+
+        <table>
+          <tr>
+            <td colspan="2" id="add_lang">+</td>
+            <td colspan="2" id="remove_lang">-</td>
+          </tr>
+
+          <tr>
+            <th>Language</th>
+            <th>Read</th>
+            <th>Write</th>
+            <th>Speak</th>
+          </tr>
+
+          <tbody id="language">
+            <% data.languages.forEach((ele, index)=>{ %>
+              <tr>
+                <td>
+                <input type="hidden" name="languages[<%=index+1%>][applicant_language_id]" value="<%= ele.applicant_language_id %>" />
+                <input list="lang_list<%=index+1%>" id="language<%=index+1%>" name="languages[<%=index+1%>][lang_name]" value="<%= data.langMap[ele.language_id] %>">
+                <datalist id="lang_list<%=index+1%>">
+            
+                </datalist>
+                    </td>
+                <td> 
+                <input type="checkbox" name="languages[<%=index+1%>][read]" id="read<%=index+1%>" value="1" <%= ele.can_read ? "checked" : "" %> ></td>
+                <td>
+                <input type="checkbox" name="languages[<%=index+1%>][write]" id="write<%=index+1%>" value="1" <%= ele.can_write ? "checked" : "" %>> </td>
+                 <td> 
+                <input type="checkbox" name="languages[<%=index+1%>][speak]" id="speak<%=index+1%>" value="1" <%= ele.can_speak ? "checked" : "" %>> </td>
+               </tr>
+                <% })%>
+          </tbody>
+        </table>
+      </fieldset>
+
+      <fieldset>
+        <legend>Technology Known</legend>
+
+        <table>
+          <tr>
+            <td colspan="2" id="add_tech">+</td>
+            <td colspan="2" id="remove_tech">-</td>
+          </tr>
+
+          <tr>
+            <th>Technology</th>
+            <th>Beginner</th>
+            <th>Intermediate</th>
+            <th>Expert</th>
+          </tr>
+
+          <tbody id="technology">
+            <% data.technologies.forEach((ele,index)=>{ %>
+              <tr>
+                <td>
+                  <input type="hidden" name="tech_names[<%=index+1%>][applicant_tech]" value="<%= ele.applicant_tech %>" />
+                  <input list="tech_list<%=index+1%>" id="technology<%=index+1%>" name="tech_names[<%=index+1%>][tech_name]" value="<%= data.techMap[ele.tech_id] %>">
+                  <datalist id="tech_list<%=index+1%>">
+                    <!-- ${getTechnologyOptions()} -->
+                  </datalist>
+                </td>
+                
+                <td>
+                  <input type="radio" id="level<%=index+1%>" name="tech_names[<%=index+1%>][level]" value="Beginner" <%= ele.level ==="Beginner"? "checked" : "" %>>
+                </td>
+                
+                <td>
+                  <input type="radio" id="level<%=index+1%>" name="tech_names[<%=index+1%>][level]" value="Intermediate" <%= ele.level ==="Intermediate"? "checked" : "" %>  >
+                </td>
+                
+                <td>
+                  <input type="radio" id="level<%=index+1%>" name="tech_names[<%=index+1%>][level]" value="Expert" <%= ele.level ==="Expert"? "checked" : "" %>>
+                </td>
+              </tr>
+              <% }) %>
+          </tbody>
+        </table>
+      </fieldset>
+
+      <fieldset>
+        <legend>Preferences</legend>
+
+        <table>
+          <tr>
+            <td>
+              <label for="preferred_location">Preferred Location</label>
+
+              <select id="preferred_location" name="preferred_location">
+                <option value="">Select Location</option>
+              </select>
+            </td>
+
+            <td>
+              <label for="notice_period">Notice Period</label>
+
+              <input
+                type="text"
+                id="notice_period"
+                name="notice_period"
+                placeholder="30 days"
+                value="<%= data.preferences && data.preferences[0] ? data.preferences[0].notice_period : '' %>"
+              />
+              <br /><br />
+              <label for="expected_ctc">Expected CTC</label>
+
+              <input
+                type="number"
+                id="expected_ctc"
+                name="expected_ctc"
+                placeholder="600000"
+                value="<%= data.preferences && data.preferences[0] ? data.preferences[0].expected_ctc : '' %>"
+              />
+              <br /><br />
+
+              <label for="current_ctc">Current CTC</label>
+
+              <input
+                type="number"
+                id="current_ctc"
+                name="current_ctc"
+                placeholder="500000"
+                value="<%= data.preferences && data.preferences[0] ? data.preferences[0].current_ctc : '' %>"
+              />
+            </td>
+
+            <td>
+              <label for="department">Department</label>
+
+              <select id="department" name="department">
+                <option value="">Select Department</option>
+              </select>
+            </td>
+          </tr>
+        </table>
+      </fieldset>
+
+      <input type="submit" value="submit form" />
+
+      <input type="reset" value="reset form" />
+    </form>
+
+    <form
+      class="form-delete-wrap"
+      method="POST"
+      action="/user/update/delete/<%= data.applicant_id %>"
+      onsubmit="return confirm('Delete this applicant and all related data permanently? This cannot be undone.');"
+    >
+      <button type="submit" class="btn-delete-applicant">Delete applicant</button>
+    </form>
+
+    <script>
+      const data = <%- JSON.stringify(data) %>;
+    </script>
+    <script src="/js/updateform.js"></script>
+  </body>
+</html>

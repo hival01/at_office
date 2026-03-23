@@ -1,0 +1,50 @@
+body{
+    
+    /* background-color: aqua; */
+    align-items: center;
+    justify-content: center;
+    display: grid;
+}
+.time-container{
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+table{
+    border-collapse: collapse;
+    /* border: 1px solid black; */
+    height: 700px;
+    width: 700px;
+    text-align: center;
+    table-layout: fixed;
+}
+
+td{
+    border: none;
+}
+
+.right-border{
+    border-right: 3px solid black;
+}
+.left-border{
+    border-left: 3px solid black;
+}
+
+.top{
+    border-top: 3px solid black;
+}
+
+.bottom{
+    border-bottom: 3px solid black;
+}
+
+.signal-green{
+    background-color: green;
+}
+.signal-red{
+    background-color: red;
+}
+
+.signal-yellow{
+    background-color: yellow;
+}
