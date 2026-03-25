@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>combobox</title>
+  </head>
+  <body >
+    <div>
+      <table>
+        <tr>
+          <td>
+            <label for="country">Country</label>
+            <br />
+            <select name="country" id="country">
+              country
+            </select>
+          </td>
+          <td>
+            <label for="country">State</label>
+            <br />
+            <select name="state" id="state">
+              state
+            </select>
+          </td>
+          <td>
+            <label for="country">City</label>
+            <br />
+            <select name="city" id="city">
+              city
+            </select>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <script>
+      let countryTag = document.getElementById("country");
+      let stateTag = document.getElementById("state");
+      let cityTag = document.getElementById("city");
+
+      countryTag.innerHTML = `<option selected disabled> select country</option>`;
+
+      // An Immediately Invoked Function Expression (IIFE)
+      (async function () {
+        try {
+          const response = await fetch("/api/country");
+
+          if (!response.ok) {
+            throw new Error(`respose status ${response.status}`);
+          }
+
+          const countries = await response.json();
+          countries.forEach((ele) => {
+            countryTag.innerHTML += `<option value="${ele.country_id}"> ${ele.country_name} </option>`;
+          });
+        } catch (err) {
+          console.log(err);
+          throw err;
+        }
+      })();
+
+      //now when change is happen in country tag , load the respective states
+      countryTag.addEventListener("change", getStates);
+
+      async function getStates() {
+        console.log("country change happend ");
+
+        const country_id = countryTag.value;
+        console.log(`seleced country id ${country_id}`);
+
+        if (!country_id) {
+          alert("select country first");
+        } else {
+          //fetch the state
+          stateTag.innerHTML = `<option selected disabled> select state</option>`;
+          cityTag.innerHTML = `<option selected disabled>select city</option>`;
+          try {
+            const res = await fetch(`/api/state/${country_id}`);
+            if (!res.ok) console.log("state response has an error");
+
+            const states = await res.json();
+
+            states.forEach((ele) => {
+              stateTag.innerHTML += `<option value="${ele.state_id}">${ele.state_name}</option>`;
+            });
+          } catch (err) {
+            console.log(err);
+          }
+        }
+      }
+
+      //now when change is happen in state tag , load the respective city
+
+      stateTag.addEventListener("change", getCitys);
+
+      async function getCitys() {
+        const state_id = stateTag.value;
+        if (!state_id) {
+          alert("select state first");
+        } else {
+          cityTag.innerHTML = `<option selected disabled>select city</option>`;
+          try {
+            const res = await fetch(`/api/city/${state_id}`);
+            if (!res.ok) console.log("error accure in fetching city");
+            const cities = await res.json();
+
+            cities.forEach((e) => {
+              cityTag.innerHTML += `<option value="${e.city_id}">${e.city_name}</option>`;
+            });
+          } catch (err) {
+            console.log(err);
+          }
+        }
+      }
+    </script>
+  </body>
+</html>
