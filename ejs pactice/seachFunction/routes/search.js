@@ -1,8 +1,8 @@
 const express = require("express");
 const db = require("../config/database");
-
 const router = express.Router();
 
+const user_per_page = 10;
 let first_name = "",
   last_name = "",
   phone_number = "",
@@ -12,19 +12,41 @@ let dbdata;
 
 let sqlQuery = "";
 let queryPara = [];
+let totalPages;
+let pages=[];
+
+function getPagination(currentPage, totalPages) {
+  let pages = [];
+  let start = Math.max(1, currentPage - 4);
+  let end = Math.min(totalPages, currentPage + 4);
+
+  if (currentPage <= 6) {
+    start = 1;
+    end = Math.min(10, totalPages);
+  }
+  if (currentPage >= totalPages - 5) {
+    start = Math.max(1, totalPages - 9);
+    end = totalPages;
+  }
+
+  for (let i = start; i <= end; i++) {
+    pages.push(i);
+  }
+  return pages;
+}
 
 router.post("/", async (req, res) => {
   //first remove old data
 
-   first_name = "",
-    last_name = "",
-    phone_number = "",
-    email = "",
-    city = "";
-  
+  ((first_name = ""),
+    (last_name = ""),
+    (phone_number = ""),
+    (email = ""),
+    (city = ""));
 
-   sqlQuery = "";
-   queryPara = [];
+  sqlQuery = "";
+  queryPara = [];
+   pages=[];
 
   console.log(req.body);
   let andor = req.body.andor ? "and" : "or";
@@ -196,54 +218,94 @@ router.post("/", async (req, res) => {
       sqlQuery += "city like ?";
     }
   }
-  //   sqlQuery += ";";
+  
   console.log(sqlQuery);
   [dbdata] = await db.execute(sqlQuery, queryPara);
-  console.log(dbdata);
+  const totalRows = dbdata.length;
+  console.log("total rows");
 
+  console.log(totalRows);
+
+  totalPages = Math.ceil(totalRows / user_per_page);
+
+  pages = getPagination(1, totalPages);
+  let queryFor10 = sqlQuery;
+  queryFor10 += " order by user_id limit 10 offset 0";
+const isget=0;
+  const [data10]= await db.execute(queryFor10,queryPara);
   res.render("filteredform", {
+    isget,
+    data10,
     dbdata,
-    //   currentPage: page,
-    //   totalPages,
-    //   pages,
-    //   sortField: finalSortField,
-    //   order,
+    currentPage: 1,
+    totalPages,
+    pages,
+    sortField: "user_id",
+    order: "asc",
   });
 });
 
-router.get("/", async (req, res) => {
-  let sortField = req.query.sort || "user_id";
-  let order = req.query.order === "desc" ? "desc" : "asc";
 
-  const allowedSortField = [
-    "user_id",
-    "first_name",
-    "last_name",
-    "city",
-    "gender",
-  ];
+const getData =  async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const offset = (page - 1) * user_per_page;
+    let sortField = req.query.sort || "user_id";
+    let order = req.query.order === "desc" ? "desc" : "asc";
 
-  const finalSortField = allowedSortField.includes(sortField)
-    ? sortField
-    : "user_id";
-  let tempquery = sqlQuery;
-  tempquery += ` order by \`${finalSortField}\` ${order}`;
+    const allowedSortField = [
+      "user_id",
+      "first_name",
+      "last_name",
+      "city",
+      "gender",
+    ];
 
-  console.log(sqlQuery);
-  console.log(queryPara);
+    const finalSortField = allowedSortField.includes(sortField)
+      ? sortField
+      : "user_id";
 
-  if (queryPara.length) {
-    //queryPara.push(finalSortField);
-    // queryPara.push(order);
-    console.log(queryPara);
+    let tempquery = sqlQuery;
+    console.log(`tempsql when /get ${tempquery}`);
 
-    [dbdata] = await db.execute(tempquery, queryPara);
-    console.log(dbdata);
+    tempquery += ` order by \`${finalSortField}\` ${order} limit ${user_per_page} offset ${offset}`;
+    console.log(`tempsql after += when /get :::${tempquery}`);
+    if (queryPara.length) {
+      // queryPara.push(10);
+      // queryPara.push(offset);
+      //queryPara.push(finalSortField);
+      // queryPara.push(order);
+      console.log(queryPara);
+  
 
-    res.render("filteredform", { dbdata });
-  } else {
-    res.send("enter the data in serach box first");
+      const [data10] = await db.execute(tempquery, queryPara);  ///here 10 will be fetched
+      // const totalRows = dbdata.length;
+      // const totalPages = Math.ceil(totalRows / user_per_page);
+
+      // const pages = getPagination(page, totalPages);
+      // console.log(dbdata);
+      const isget=1;
+      pages = getPagination(page, totalPages);
+      console.log(pages);
+      
+
+      res.render("filteredform", {
+        data10,
+        isget,
+        dbdata,
+        currentPage: page,
+        totalPages,
+        pages,
+        sortField: finalSortField,
+        order,
+      });
+    } else {
+      res.send("enter the data in serach box first");
+    }
+  } catch {
+    console.error("error");
   }
-});
+}
+router.get("/", getData);
 
 module.exports = router;

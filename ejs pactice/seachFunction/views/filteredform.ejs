@@ -8,11 +8,23 @@
 
 </head>
 <body>
+    <form action="/search" method="post">
+        <p>check the box for and</p>
+        <p>unchecked for or</p>
+        <input type="checkbox" name="andor" id="andor">
+        <input type="search" name="queryString" placeholder="search here">
+        <button type="submit">Search</button>
+    </form>
+
+  
+        <%- include('partials/searchpagination') %>
+    <br>
+
     <table>
             <tr>
                 <th> 
                     <a href="/search/?sort=user_id&order=asc"> ↑ </a>
-                    <a href="/search/?sort=user_id&order=desc">↓</a>    
+                    <a href="/search/?sort=user_id&order=desc"> ↓ </a>    
                     ID  
                 </th>
                 <th>
@@ -42,7 +54,7 @@
                 </th>
             </tr>
 
-            <% dbdata.forEach( data=> { %>
+            <% data10.forEach( data=> { %>
                 <tr>
                     <td>
                         <%= data.user_id %>
@@ -73,5 +85,11 @@
 
                 <% })%>
         </table>
+        <br>
+   
+        <%- include('partials/searchpagination') %>
+   
+
+
 </body>
 </html>

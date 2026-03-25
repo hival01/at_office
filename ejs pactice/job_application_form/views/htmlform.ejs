@@ -17,22 +17,22 @@
           <tr>
             <td>
               <label for="first_name">First Name</label>
-              <input type="text" id="first_name" name="first_name" />
+              <input type="text" id="first_name" name="first_name" required />
               <br /><br />
               <label for="last_name">Last Name</label>
-              <input type="text" id="last_name" name="last_name" />
+              <input type="text" id="last_name" name="last_name" required/>
 
               <br /><br />
               <label for="designation"> Designation</label>
-              <input type="text" name="designation" id="designation" />
+              <input type="text" name="designation" id="designation" required/>
 
               <br /><br />
               <label for="email">Email</label>
-              <input type="text" id="email" name="email" />
+              <input type="text" id="email" name="email" required/>
 
               <br /><br />
               <label for="ph_no">Phone Number</label>
-              <input type="text" id="ph_no" name="ph_no" />
+              <input type="text" id="ph_no" name="ph_no" required/>
 
               <br /><br />
               Gender
@@ -54,6 +54,7 @@
                 name="maritalstatus"
                 id="maritalstatus"
                 style="font-size: medium"
+                
               >
                 <option value="single" selected>single</option>
                 <option value="married">married</option>
@@ -67,6 +68,7 @@
                 name="address1"
                 id="address1"
                 style="width: 300px; height: 80px"
+                required
               />
 
               <br /><br />
@@ -86,6 +88,7 @@
                 id="city"
                 style="font-size: medium"
                 name="city"
+                required
               />
               <datalist id="citylist">
                 <option value="surat"></option>
@@ -95,7 +98,7 @@
 
               <br /><br />
               <label for="state">State</label>
-              <input list="statelist" id="state" name="state" />
+              <input list="statelist" id="state" name="state" required/>
               <datalist id="statelist">
                 <option value="gujarat"></option>
                 <option value="maharastra"></option>
@@ -110,11 +113,12 @@
                 name="zip"
                 maxlength="6"
                 minlength="6"
+                required
               />
               `
               <br /><br />
               <label for="dob">Date of Birth</label>
-              <input type="date" id="dob" name="dob" />
+              <input type="date" id="dob" name="dob" required/>
             </td>
           </tr>
         </table>
@@ -139,13 +143,13 @@
           <tbody id="education">
             <tr>
               <td>
-                <input type="text" id="course1" name="course[]" />
+                <input type="text" id="course1" name="course[]" required/>
               </td>
               <td>
-                <input type="text" id="passingyear1" name="passingyear[]" />
+                <input type="text" id="passingyear1" name="passingyear[]" required/>
               </td>
               <td>
-                <input type="text" id="uni1" name="uni[]" />
+                <input type="text" id="uni1" name="uni[]" required/>
               </td>
               <td>
                 <input
@@ -153,25 +157,10 @@
                   id="result1"
                   name="result[]"
                   placeholder="0-100"
+                  required
                 />
               </td>
             </tr>
-
-            <!-- 2nd row -->
-            <!-- <tr>
-              <td>
-                <input type="text" id="course2" name="course[]" />
-              </td>
-              <td>
-                <input type="text" id="passingyear2" name="passingyear[]" />
-              </td>
-              <td>
-                <input type="text" id="uni2" name="uni[]" />
-              </td>
-              <td>
-                <input type="text" id="result2" name="result[]" placeholder="0-100" />
-              </td>
-            </tr> -->
           </tbody>
         </table>
       </fieldset>
@@ -205,6 +194,7 @@
                   name="comp_name[]"
                   id="comp_name1"
                   placeholder="eSparkBiz"
+                  required
                 />
               </td>
               <td><input type="date" name="from_date[]" id="from_date1" /></td>
@@ -215,6 +205,7 @@
                   placeholder="1000000"
                   name="package[]"
                   id="package1"
+                  required
                 />
               </td>
               <td>
@@ -222,6 +213,7 @@
                   type="text"
                   name="reason_to_leave[]"
                   id="reason_to_leave1"
+                  required
                 />
               </td>
               <td>
@@ -230,6 +222,7 @@
                   id="contact_no1"
                   name="contact_no[]"
                   placeholder="9876543219"
+                  required
                 />
               </td>
               <td>
@@ -238,6 +231,7 @@
                   name="name[]"
                   id="name1"
                   placeholder="hival patel"
+                  required
                 />
               </td>
 
@@ -247,6 +241,7 @@
                   name="relation[]"
                   id="relation1"
                   placeholder="friend / brother"
+                  required
                 />
               </td>
             </tr>
@@ -315,6 +310,7 @@
                 id="notice_period"
                 name="notice_period"
                 placeholder="30 days"
+                required
               />
               <br /><br />
               <label for="expected_ctc">Expected CTC</label>
@@ -324,6 +320,7 @@
                 id="expected_ctc"
                 name="expected_ctc"
                 placeholder="600000"
+                required
               />
               <br /><br />
 
@@ -334,6 +331,7 @@
                 id="current_ctc"
                 name="current_ctc"
                 placeholder="500000"
+                required
               />
             </td>
 

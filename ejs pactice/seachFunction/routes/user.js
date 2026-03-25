@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const db = require("../config/database");
 
-const user_per_page = 100;
+const user_per_page = 10;
 
 function getPagination(currentPage, totalPages) {
   let pages = [];
@@ -44,6 +44,7 @@ router.get("/", async (req, res) => {
       : "user_id";
 
     // Count total rows
+    
     const [countResult] = await db.execute(
       "SELECT COUNT(*) AS total FROM users",
     );

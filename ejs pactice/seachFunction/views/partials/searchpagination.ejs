@@ -1,0 +1,28 @@
+<div class="pagination">
+  <% if(currentPage> 1){ %>
+  <a href="/search/?page=<%= currentPage - 1 %>&sort=<%=sortField%>&order=<%=order%>" style="background-color: aqua;">
+     Prev</a>
+  <% } %>
+
+  <% if(pages[0]> 1){ %>
+  <a href="/search/?page=1&sort=<%= sortField %>&order=<%= order %>">1</a>
+  <span>...</span>
+  <% } %>
+
+  <% pages.forEach(p=> { %>
+  <a href="/search/?page=<%= p %>&sort=<%= sortField %>&order=<%= order %>" class="<%= currentPage === p ? 'active' : '' %>">
+    <%= p %>
+  </a>
+  <% }) %>
+
+  <% if(pages[pages.length - 1] < totalPages){ %>
+  <span>...</span>
+  <a href="/search/?page=<%= totalPages %>&sort=<%= sortField %>&order=<%= order %>">
+    <%= totalPages %>
+  </a>
+  <% } %>
+
+  <% if(currentPage < totalPages){ %>
+  <a href="/search/?page=<%= currentPage + 1 %>&sort=<%= sortField %>&order=<%= order %>" style="background-color: aqua; ">Next >> </a>
+  <% } %>
+</div>

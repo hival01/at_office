@@ -23,22 +23,22 @@
           <tr>
             <td>
               <label for="first_name">First Name</label>
-              <input type="text" id="first_name" name="first_name" value="<%= data.basic_details[0].first_name %>"/>
+              <input type="text" id="first_name" name="first_name" value="<%= data.basic_details[0].first_name %> "required/>
               <br /><br />
               <label for="last_name">Last Name</label>
-              <input type="text" id="last_name" name="last_name" value="<%= data.basic_details[0].last_name %>" />
+              <input type="text" id="last_name" name="last_name" value="<%= data.basic_details[0].last_name %>" required/>
 
               <br /><br />
               <label for="designation"> Designation</label>
-              <input type="text" name="designation" id="designation" value="<%= data.basic_details[0].Designation %> "/>
+              <input type="text" name="designation" id="designation" value="<%= data.basic_details[0].Designation %> "required/>
 
               <br /><br />
               <label for="email">Email</label>
-              <input type="text" id="email" name="email" value="<%= data.basic_details[0].email %>"/>
+              <input type="text" id="email" name="email" value="<%= data.basic_details[0].email %>"required/>
 
               <br /><br />
               <label for="ph_no">Phone Number</label>
-              <input type="text" id="ph_no" name="ph_no" value="<%= data.basic_details[0].phone_no %>" />
+              <input type="text" id="ph_no" name="ph_no" value="<%= data.basic_details[0].phone_no %>" required/>
 
               <br /><br />
               Gender
@@ -46,9 +46,9 @@
                 type="radio"
                 id="male"
                 name="gender"
-               
                 value="male"
                  <%= data.basic_details[0].gender=="male"? "checked" :"" %>
+                 
               />
               <label for="male">Male</label>
 
@@ -75,7 +75,8 @@
                 name="address1"
                 id="address1"
                 style="width: 300px; height: 80px"
-                value="<%= data.basic_details[0].address1 %>"
+                value="<%= data.basic_details[0].address1 %>" 
+                required
               />
 
               <br /><br />
@@ -86,6 +87,7 @@
                 id="address2"
                 style="width: 300px"
                 value="<%= data.basic_details[0].address2 %>"
+                
               />
 
               <br /><br />
@@ -97,6 +99,7 @@
                 style="font-size: medium"
                 name="city"
                 value="<%= data.basic_details[0].city %>"
+                required
               />
               <datalist id="citylist">
                 <option value="surat"></option>
@@ -106,7 +109,7 @@
 
               <br /><br />
               <label for="state">State</label>
-              <input list="statelist" id="state" name="state" value="<%= data.basic_details[0].state %>" />
+              <input list="statelist" id="state" name="state" value="<%= data.basic_details[0].state %>" required/>
               <datalist id="statelist">
                 <option value="gujarat"></option>
                 <option value="maharastra"></option>
@@ -122,10 +125,11 @@
                 maxlength="6"
                 minlength="6"
                 value="<%= data.basic_details[0].zipcode %>"
+                required
               />
               <br /><br />
               <label for="dob">Date of Birth</label>
-              <input type="date" id="dob" name="dob" value="<%= data.basic_details[0].dob.toISOString().slice(0,10) %>"/>
+              <input type="date" id="dob" name="dob" value="<%= data.basic_details[0].dob.toISOString().slice(0,10) %>" required/>
             </td>
           </tr>
         </table>
@@ -367,7 +371,8 @@
                 id="notice_period"
                 name="notice_period"
                 placeholder="30 days"
-                value="<%= data.preferences && data.preferences[0] ? data.preferences[0].notice_period : '' %>"
+                value="<%= data.preferences && data.preferences[0] ? data.preferences[0].notice_period : '' %>" 
+                required
               />
               <br /><br />
               <label for="expected_ctc">Expected CTC</label>
@@ -378,6 +383,7 @@
                 name="expected_ctc"
                 placeholder="600000"
                 value="<%= data.preferences && data.preferences[0] ? data.preferences[0].expected_ctc : '' %>"
+                required
               />
               <br /><br />
 
@@ -389,6 +395,7 @@
                 name="current_ctc"
                 placeholder="500000"
                 value="<%= data.preferences && data.preferences[0] ? data.preferences[0].current_ctc : '' %>"
+                required
               />
             </td>
 

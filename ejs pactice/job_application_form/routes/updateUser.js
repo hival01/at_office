@@ -3,9 +3,14 @@ const router = express.Router();
 const db = require("../config/database");
 
 /** Single value or array → array */
-function ensureArray(v) {
-  if (v === undefined || v === null) return [];
-  return Array.isArray(v) ? v : [v];
+// function ensureArray(v) {
+  // if (v === undefined || v === null) return [];
+  // return Array.isArray(v) ? v : [v];
+// }
+
+function ensureArray(v){
+  if(v=== undefined || v=== null) return [];
+  return Array.isArray(v)?v:[v];
 }
 
 /** Express body: languages[1][lang_name] → object; htmlform may send array */
@@ -19,6 +24,7 @@ function normalizeIndexedRows(obj) {
 
 async function getOrCreateLanguageId(languageName) {
   const name = String(languageName).toLowerCase().trim();
+
   const [existing] = await db.execute(
     "SELECT language_id FROM languages WHERE language_name = ?",
     [name]
@@ -105,7 +111,9 @@ async function deleteChildRowsNotInList(key, applicant_id, keptIds) {
 router.get("/:id", async (req, res) => {
   const applicant_id = req.params.id;
   const updated = req.query.updated === "1";
-
+  if(isNaN(applicant_id)){
+    res.send("enter valid applicant id")
+  }
   try {
     const [basic_details] = await db.execute(
       "select * from basic_details where applicant_id=(?)",
