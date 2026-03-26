@@ -1,0 +1,61 @@
+/* body{
+    justify-content: center;
+    display: flex;
+}
+.game-container{
+    text-align: center;
+}
+
+.header{
+    display: flex;
+    justify-content: space-around;
+    font-weight: bold;
+    margin-bottom: 30px;    
+}
+
+#grid{
+    display: grid;
+    width: 500px;
+    height: 500px;
+    gap: 4px;
+    margin: 10px auto;
+
+}
+.cell{
+    cursor: pointer;
+    border-radius: 4px;
+}
+ */
+body {
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+
+}
+.game-container {
+  text-align: center;
+  margin-top: 20px;
+}
+.header {
+  display: flex;
+  justify-content: space-around;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+#grid {
+  display: grid;
+  gap: 4px;
+  margin: 10px auto;
+  width: 500px; 
+  height: 500px;
+}
+.cell {
+  cursor: pointer;
+  border-radius: 4px;
+}
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 10px;
+}

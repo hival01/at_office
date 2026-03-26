@@ -1,4 +1,4 @@
-let score ;
+let score;
 let gridSize;
 let time;
 let timeInterval;
@@ -9,14 +9,13 @@ if (highScore === null) {
 
 let gameOverFlag = false; // Add this flag to track the game state
 document.getElementById("highScore").innerText = highScore;
- 
+
 function startGame() {
   document.getElementById("highScore").innertext = highScore;
   score = 0;
   gridSize = 2;
   time = document.getElementById("time-input").value || 10;
   console.log(time);
-  
 
   document.getElementById("score").innerText = score;
   document.getElementById("time").innerText = time;
@@ -31,9 +30,8 @@ function createGrid() {
   const grid = document.getElementById("grid");
   grid.innerHTML = "";
 
+  grid.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
 
-   grid.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
- 
   // rendom color
 
   const r = Math.floor(Math.random() * 256);

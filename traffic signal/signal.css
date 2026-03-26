@@ -7,16 +7,29 @@ body{
 }
 .time-container{
     justify-content: center;
-    align-items: center;
-    display: flex;
+    display:flex;
+    margin-bottom: 50px;
+    /* width: auto;
+    height: 50px;
+    border: 1px solid black; */
 }
 table{
     border-collapse: collapse;
     /* border: 1px solid black; */
-    height: 700px;
-    width: 700px;
+    height: 800px;
+    width: 800px;
     text-align: center;
     table-layout: fixed;
+}
+button{
+    width: 100px;
+    height: 50px;
+}
+#table-container{
+    
+    justify-items: center;
+    align-items: center;
+    display: grid;
 }
 
 td{
