@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>job form v2</title>
+  </head>
+  <body>
+    <form>
+      <h1>Job apllication form v2</h1>
+      <fieldset>
+        <legend>Basic Details</legend>
+        <div id="basicDetails">
+          <div>
+            <label for="name">First Name</label>
+            <input type="text" id="firstName" name="firstName" required />
+
+            <br /><br />
+            <label for="lastName">Last Name</label>
+            <input type="text" id="lastName" name="lastName" required />
+
+            <br /><br />
+            <label for="email">Email</label>
+            <input type="text" id="email" name="email" required />
+
+            <br /><br />
+            <label for="phoneNo">Phone Number</label>
+            <input type="text" name="phoneNo" id="phoneNo" required />
+          </div>
+          <div id="gender"></div>
+          <div id="relationship"></div>
+        </div>
+      </fieldset>
+
+      <div id="buttons">
+        <button type="submit" id="submitBtn">Submit</button>
+        <button type="reset" id="resetBtn">Reset</button>
+      </div>
+    </form>
+
+    <script src="/js/form.js"></script>
+  </body>
+</html>
