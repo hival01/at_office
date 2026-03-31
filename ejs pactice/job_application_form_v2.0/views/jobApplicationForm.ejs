@@ -4,32 +4,82 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>job form v2</title>
+    <link rel="stylesheet" href="/css/style.css" />
   </head>
   <body>
     <form>
       <h1>Job apllication form v2</h1>
       <fieldset>
         <legend>Basic Details</legend>
-        <div id="basicDetails">
-          <div>
-            <label for="name">First Name</label>
-            <input type="text" id="firstName" name="firstName" required />
+        <div class="basicDetails">
+          <div class="basicDetails1">
+            <div>
+              <label for="name">First Name</label>
+              <input type="text" id="firstName" name="firstName" required />
 
-            <br /><br />
-            <label for="lastName">Last Name</label>
-            <input type="text" id="lastName" name="lastName" required />
+              <br /><br />
+              <label for="lastName">Last Name</label>
+              <input type="text" id="lastName" name="lastName" required />
 
-            <br /><br />
-            <label for="email">Email</label>
-            <input type="text" id="email" name="email" required />
+              <br /><br />
+              <label for="email">Email</label>
+              <input type="text" id="email" name="email" required />
 
-            <br /><br />
-            <label for="phoneNo">Phone Number</label>
-            <input type="text" name="phoneNo" id="phoneNo" required />
+              <br /><br />
+              <label for="phoneNo">Phone Number</label>
+              <input type="text" name="phoneNo" id="phoneNo" required />
+            </div>
+            <br>
+            <div id="gender"></div>
+              <br>
+            <div id="relationship"></div>
           </div>
-          <div id="gender"></div>
-          <div id="relationship"></div>
+
+          <div>
+            <label for="address1">Address 1</label><br>
+            <input type="text" name="address1" id="address1" style="width: 300px; height: 50px" required />
+
+            <br><br>
+            <label for="address1">Address 2</label><br>
+            <input type="text" name="address2" id="address2" style="width: 300px; height: 50px" required />
+
+            <br><br>
+            <div id="state"></div>
+            <br>
+            <div id="city">City
+              <!-- dummy select tag , this will be removed when state is selected -->
+              <select style="width: 100px; ;"><option disabled selected>select City</option></select></div>
+
+            <br>
+            <label for="zip">zip code</label>
+            <input type="number" id="zip" placeholder="123456" name="zip" minlength="6" maxlength="6" required>
+
+            <br /><br />
+              <label for="dob">Date of Birth</label>
+              <input type="date" id="dob" name="dob" required />
+
+
+          </div>
         </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Education Status</legend>
+
+        <button id="addEduBtn">Add Row</button>
+        <table border="2" id="eduTable">
+          <thead>
+            <th>course</th>
+            <th>passing year</th>
+            <th>uni / board</th>
+            <th>result</th>
+          </thead>
+          <tbody id="eduBody">
+
+          </tbody>
+
+
+        </table>
       </fieldset>
 
       <div id="buttons">

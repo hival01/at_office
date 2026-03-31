@@ -31,3 +31,33 @@ exports.getRelationship = async (req, res)=>{
         
     }
 }
+
+exports.getState = async (req, res)=>{
+    try {
+        const [selectResult]= await db.execute(`select selectId from selectMaster where selectName="state"`);
+        const selectId = selectResult[0].selectId;
+
+        const [optionResult] = await db.execute(`select * from optionMaster where selectId =${selectId}`);
+
+        res.json(optionResult);
+    } catch (error) {
+        console.log(`error in getrelationship ${error}`);
+    }
+}
+
+exports.getCity = async (req, res)=>{
+    try {
+        const stateName = req.query.state;
+        console.log(`state name ${stateName}`);
+        
+        const [selectResult]= await db.execute(`select selectId from selectMaster where selectname="city"`);
+        const selectId = selectResult[0].selectId;
+
+        const [optionResult]= await db.execute(`select * from optionMaster where selectId=${selectId} and parentId=(select optionId from optionMaster where optionName="${stateName}")`);
+
+        res.json(optionResult);
+
+    } catch (error) {
+        console.log(`error in getcity ${error}`);
+    }
+}

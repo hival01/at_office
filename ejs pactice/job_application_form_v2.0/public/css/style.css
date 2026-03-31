@@ -1,0 +1,12 @@
+body{
+    background-color: black;
+    color: rgb(196, 242, 206);
+}
+.basicDetails{
+    display: flex;
+    margin-right: 20px;
+}
+.basicDetails1{
+
+    margin-right: 150px;
+}
