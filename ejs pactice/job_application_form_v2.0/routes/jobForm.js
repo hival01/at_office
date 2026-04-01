@@ -8,6 +8,7 @@ route.get("/api/getGender", controller.getGender)
 route.get("/api/getRelationship" , controller.getRelationship);
 route.get("/api/getState" , controller.getState);
 route.get("/api/getCity" , controller.getCity);
+route.post("/api/submit", controller.submit);
 
 
 

@@ -46,9 +46,10 @@
             <br><br>
             <div id="state"></div>
             <br>
-            <div id="city">City
+            <div id="city">
               <!-- dummy select tag , this will be removed when state is selected -->
-              <select style="width: 100px; ;"><option disabled selected>select City</option></select></div>
+             City <select style="width: 100px; ;"><option disabled selected>select City</option></select>
+            </div>
 
             <br>
             <label for="zip">zip code</label>
@@ -67,7 +68,7 @@
         <legend>Education Status</legend>
 
         <button id="addEduBtn">Add Row</button>
-        <table border="2" id="eduTable">
+        <table border="1" id="eduTable">
           <thead>
             <th>course</th>
             <th>passing year</th>
@@ -75,13 +76,80 @@
             <th>result</th>
           </thead>
           <tbody id="eduBody">
-
+            
           </tbody>
 
 
         </table>
       </fieldset>
 
+      <fieldset>
+        <legend>Work Experience</legend>
+
+         <button id="addExpBtn">Add Row</button>
+         <br>
+
+        <table border="1">
+          <thead>
+            <th>Company Name</th>
+            <th>From date</th>
+            <th>To date</th>
+            <th>Annual package</th>
+            <th>Reason to leave</th>
+            <th>ref. Contact no</th>
+            <th>ref. Contact name</th>
+            <th>ref. Contact relation</th>
+          </thead>
+
+          <tbody id="workExpBody">
+
+          </tbody>
+          
+        </table>
+      </fieldset>
+
+
+      <br>
+      <fieldset>
+        <legend>Language Known</legend>
+        <button id="addLangBtn">Add Row</button> <br><br>
+        
+        <table border="1">
+          <thead>
+            <th>Language</th>
+            <th>Read</th>
+            <th>write</th>
+            <th>speak</th>
+          </thead>
+          <tbody id="langBody">
+
+          </tbody>
+        </table>
+      </fieldset>
+
+      <fieldset>
+        <legend>Technology Known</legend>
+        <button id="addTechBtn">Add Row</button>
+        <table border="1">
+          <thead>
+            <th>Technologies</th>
+            <th>Beginner</th>
+            <th>Intermediate</th>
+            <th>Expert</th>
+          </thead>
+
+          <tbody id="techBody">
+
+          </tbody>
+
+        </table>
+      </fieldset>
+
+
+
+
+
+      <br><br>
       <div id="buttons">
         <button type="submit" id="submitBtn">Submit</button>
         <button type="reset" id="resetBtn">Reset</button>
