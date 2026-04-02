@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/css/style.css" />
   </head>
   <body>
-    <form>
+    <form method="POST" action="/api/submit">
       <h1>Job apllication form v2</h1>
       <fieldset>
         <legend>Basic Details</legend>
@@ -141,6 +141,68 @@
           <tbody id="techBody">
 
           </tbody>
+
+        </table>
+      </fieldset>
+
+      <fieldset>
+        <legend>Preferences</legend>
+        <table>
+          <tr >
+            <td style="padding-right: 60px;">
+              <label> Preferred Location 1</label>
+              <div id="preferredLocation1">
+
+              </div>
+
+              <br>
+              <label> Preferred Location 2</label>
+              <div id="preferredLocation2">
+
+              </div>
+            </td>
+
+            <td style="padding-right: 60px;">
+              <label for="notice_period">Notice Period</label>
+
+              <input
+                type="number"
+                id="noticePeriod"
+                name="noticePeriod"
+                placeholder="30 days"
+                required
+                min="0"
+              />
+              <br /><br />
+              <label for="expected_ctc">Expected CTC</label>
+
+              <input
+                type="number"
+                id="expectedCtc"
+                name="expectedCtc"
+                placeholder="600000"
+                required
+              />
+              <br /><br />
+
+              <label for="current_ctc">Current CTC</label>
+
+              <input
+                type="number"
+                id="currentCtc"
+                name="currentCtc"
+                placeholder="500000"
+                required
+              />
+            </td>
+
+            <td>
+              <label>Department</label>
+              <div id="department">
+            
+              </div>
+            </td>
+          </tr>
 
         </table>
       </fieldset>

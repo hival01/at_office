@@ -58,9 +58,39 @@ exports.getCity = async (req, res)=>{
     }
 }
 
+
+exports.getPrefLocation = async (req, res)=>{
+    try{
+        const [result] = await db.execute(`select selectId from selectMaster where selectName="prefLocation"`)
+        if(result){
+            const selectId = result[0].selectId;
+
+            const [locations]= await db.execute(`select * from optionMaster where selectId =${selectId}`);
+            res.send(locations);
+        }
+    }catch(error){
+        console.log(`error in getPrefLocation ${error}`);
+        
+    }
+}
+
+exports.getPrefDepartment = async ( req, res)=>{
+    try {
+        const [result] = await db.execute(`select selectId from selectMaster where selectName="prefDepartment"`);
+        const selectId = result[0].selectId;
+
+        const[departments] = await db.execute(`select * from optionMaster where selectId=${selectId}`);
+        res.json(departments);
+
+    } catch (error) {
+        console.log(`error in getPrefDepartment ${error}`);
+        
+    }
+}
 exports.submit = (req, res)=>{
     try {
-        res.json({hii:"hiival"})
+        console.log(req.body);
+        res.send("hii data is sent to backend")
     } catch (error) {
         console.log(`error inot submit form`);
         
