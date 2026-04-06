@@ -15,24 +15,19 @@
           <div class="basicDetails1">
             <div>
               <label for="name">First Name</label>
-              <input type="text" id="firstName" name="firstName" required />
+              <input type="text" id="firstName" name="firstName" required value="<%= data.basic_details[0].firstName %>"/>
 
               <br /><br />
               <label for="lastName">Last Name</label>
-              <input type="text" id="lastName" name="lastName" required />
+              <input type="text" id="lastName" name="lastName" required value="<%= data.basic_details[0].lastName %>"/>
 
               <br /><br />
               <label for="email">Email</label>
-              <input type="text" id="email" name="email" required />
+              <input type="text" id="email" name="email" required value="<%= data.basic_details[0].email %>"/>
 
               <br /><br />
               <label for="phoneNo">Phone Number</label>
-              <input type="text" name="phoneNo" id="phoneNo" required />
-
-              <br /><br />
-              <label for="designation">designation</label>
-              <input type="text" name="designation" id="designation" required />
-
+              <input type="text" name="phoneNo" id="phoneNo" required value="<%= data.basic_details[0].phoneNo %>"/>
             </div>
             <br>
             <div id="gender"></div>
@@ -223,6 +218,10 @@
       </div>
     </form>
 
-    <script src="/js/form.js"></script>
+     <script>
+      const userdata = <%- JSON.stringify(data) %>;
+    </script>
+
+    <script src="/js/updateForm.js"></script>
   </body>
 </html>

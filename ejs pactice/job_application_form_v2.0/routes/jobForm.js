@@ -10,6 +10,7 @@ route.get("/api/getState" , controller.getState);
 route.get("/api/getCity" , controller.getCity);
 route.get("/api/getPrefLocation" , controller.getPrefLocation);
 route.get("/api/getPrefDepartment" , controller.getPrefDepartment);
+route.get("/show/:id" , controller.getUser);
 
 route.post("/api/submit", controller.submit);
 
