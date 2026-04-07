@@ -85,11 +85,13 @@ async function getState() {
   option1.selected = true;
   stateTag.appendChild(option1);
 
+  let userState = userdata.basic_details[0].state;
+
   data.forEach((e) => {
     const option = document.createElement("option");
     option.value = e.optionName;
     option.textContent = e.optionName;
-
+    option.selected = userState=== e.optionName ? true : false;
     stateTag.appendChild(option);
   });
 
@@ -138,12 +140,14 @@ async function getCity() {
   option1.selected = true;
   cityTag.appendChild(option1);
 
+
+  let userCity = data.basic_details[0].city;
   //add other options
   data.forEach((e) => {
     const option = document.createElement("option");
     option.value = e.optionName;
     option.textContent = e.optionName;
-
+    option.selected = userCity === e.optionName ? true : false;
     cityTag.appendChild(option);
   });
 
