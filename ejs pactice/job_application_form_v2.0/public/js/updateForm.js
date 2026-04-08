@@ -1,439 +1,216 @@
-const genderDiv = document.getElementById("gender");
-const relationshipDiv = document.getElementById("relationship");
-const stateDiv = document.getElementById("state");
-const cityDiv = document.getElementById("city");
-const eduBody = document.getElementById("eduBody");
-const addEduBtn = document.getElementById("addEduBtn");
-const workExpBody = document.getElementById("workExpBody");
-const addExpBtn = document.getElementById("addExpBtn");
-const langBody = document.getElementById("langBody"); 
-const addLangBtn = document.getElementById("addLangBtn");
-const techBody = document.getElementById("techBody");
-const addTechBtn = document.getElementById("addTechBtn");
-const preferredLocationDiv1 = document.getElementById("preferredLocation1");
-const preferredLocationDiv2 = document.getElementById("preferredLocation2");
-const departmentDiv = document.getElementById("department");
+const user = window.userdata || {};
+const steps = Array.from(document.querySelectorAll(".step-fieldset"));
+const prevBtn = document.getElementById("prevBtn");
+const nextBtn = document.getElementById("nextBtn");
+const submitBtn = document.getElementById("submitBtn");
+const stepValidationMessage = document.getElementById("stepValidationMessage");
+let currentStep = 0;
 
-
-async function getGender() {
-  const response = await fetch("/api/getGender");
-  const data = await response.json();
-
-  console.log(data);
-  const userGender = userdata.basic_details[0].gender;
-
-  console.log(userGender);
-  
-  genderDiv.innerHTML = `<label> Gender : </label>`;
-  data.forEach((element) => {
-     const isChecked = element.optionName === userGender ? "checked" : "";
-    genderDiv.innerHTML += `
-    <input type="radio" name="gender" id="${element.optionName}" value="${element.optionName}" ${isChecked}>
-    <label for="${element.optionName}">${element.optionName}</label>`;
-  });
-} 
-
-async function getRelationship() {
-  const response = await fetch("/api/getRelationship");
-  const data = await response.json();
-
-  const userRelation = userdata.basic_details[0].relationship;
-
-  const selectTag = document.createElement("select");
-  selectTag.name = "relationship";
-  selectTag.id = "relationship";
-
-  data.forEach((e) => {
-    //add logic to insert options in relationship select tag
-    const isSelected = e.optionName === userRelation ?true:false;
-    const option = document.createElement("option");
-    option.value = e.optionName;
-    option.textContent = e.optionName;
-    option.selected = isSelected;
-
-    selectTag.appendChild(option);
-  });
-
-  //add label for relationship
-  const label = document.createElement("label");
-  label.textContent = "relationship status ";
-  label.htmlFor = "relationship"; //work as for property in html
-
-  relationshipDiv.appendChild(label);
-  relationshipDiv.appendChild(selectTag);
+function showStep(i) {
+  steps.forEach((s, idx) => s.classList.toggle("active", idx === i));
+  prevBtn.style.display = i === 0 ? "none" : "inline-block";
+  nextBtn.style.display = i === steps.length - 1 ? "none" : "inline-block";
+  submitBtn.style.display = i === steps.length - 1 ? "inline-block" : "none";
+  stepValidationMessage.textContent = "";
 }
 
-let stateTag;
-async function getState() {
-  const response = await fetch("/api/getState");
-  if (!response.ok) {
-    console.log(`error in fetch getState`);
-  }
-  const data = await response.json();
-
-  //make datalist tag and append option to it
-  //currently this is select tag , learn how to make datalist dynamically
-
-  stateTag = document.createElement("select");
-  stateTag.id = "statelist";
-  stateTag.name="state";
-
-  //make disabled 1st option tag
-  const option1 = document.createElement("option");
-  option1.textContent = "select state ";
-  option1.disabled = true;
-  option1.selected = true;
-  stateTag.appendChild(option1);
-
-  let userState = userdata.basic_details[0].state;
-
-  data.forEach((e) => {
-    const option = document.createElement("option");
-    option.value = e.optionName;
-    option.textContent = e.optionName;
-    option.selected = userState=== e.optionName ? true : false;
-    stateTag.appendChild(option);
-  });
-
-  stateTag.addEventListener("change", getCity);
-
-  //make label and input field
-
-  const label = document.createElement("label");
-  const input = document.createElement("input");
-  label.htmlFor = "state";
-  label.textContent = "State ";
-
-  input.id = "state";
-  input.required = true;
-  input.list = "statelist";
-
-  stateDiv.appendChild(label);
-  // stateDiv.appendChild(input)
-  stateDiv.appendChild(stateTag);
-}
-
-async function getCity() {
-  //empty the div first if it have any child element
-
-  while (cityDiv.firstChild) {
-    cityDiv.removeChild(cityDiv.firstChild);
-  }
-
-  let stateName = stateTag.value;
-  console.log(`state name is ${stateName}`);
-
-  const response = await fetch(`/api/getCity?state=${stateName}`);
-  if (!response.ok) {
-    console.log(`error on fetching getCity`);
-  }
-  const data = await response.json();
-
-  const cityTag = document.createElement("select");
-  cityTag.id = "city";
-  cityTag.name="city";
-
-  //make disabled 1st option tag
-  const option1 = document.createElement("option");
-  option1.textContent = "select City ";
-  option1.disabled = true;
-  option1.selected = true;
-  cityTag.appendChild(option1);
-
-
-  let userCity = data.basic_details[0].city;
-  //add other options
-  data.forEach((e) => {
-    const option = document.createElement("option");
-    option.value = e.optionName;
-    option.textContent = e.optionName;
-    option.selected = userCity === e.optionName ? true : false;
-    cityTag.appendChild(option);
-  });
-
-  const label = document.createElement("label");
-  label.htmlFor = "city";
-  label.textContent = "City ";
-
-  cityDiv.appendChild(label);
-  cityDiv.appendChild(cityTag);
-}
-
-function addEduRow() {
-  const row = document.createElement("tr");
-
-  //1st td - course
-  const courseTd = createInputTd("text", "courses", true,"courses");
-  row.appendChild(courseTd);
-
-  //2nd td- passing year
-  const passingYearTd = createInputTd("text", "passingYears", true,  "passingYears");
-  row.appendChild(passingYearTd);
-
-  //3rd td - uni/board
-  const uniTd = createInputTd("text", "unis", true, "unis");
-  row.appendChild(uniTd);
-
-  //4th td - result
-  const resultTd = createInputTd("text", "results", true, "results");
-  row.appendChild(resultTd);
-
-  //5th td - delete button
-  const deleteTd = createDeleteTd();
-  row.appendChild(deleteTd);
-
-  eduBody.appendChild(row);
-}
-
-
-function addExpRow (){
-  const row = document.createElement('tr');
-  
-  //1st col
-  const compName = createInputTd("text" , "compName" , true, "compName");
-  row.appendChild(compName);
-
-  //2nd col from date
-  const fromDate= createInputTd("date", "fromDate" , true , "fromDate");
-  row.appendChild(fromDate);
-
-  //3nd col to date
-  const toDate= createInputTd("date", "toDate" , true , "toDate");
-  row.appendChild(toDate);
-
-  //4th col annual package
-  const annualPkg = createInputTd("text" , "annualPkg" , true ,"annualPkg");
-  row.appendChild(annualPkg);
-
-  const reasonToLeave = createInputTd("text" , "reasonToLeave" , true ,"reasonToLeave");
-  row.appendChild(reasonToLeave);
-
-  const refContactNo = createInputTd("text" , "refContactNo" , true ,"refContactNo");
-  row.appendChild(refContactNo);
-
-
-  const refContactName = createInputTd("text" , "refContactName" , true , "refContactName");
-  row.appendChild(refContactName);
-
-  const refContactRelation = createInputTd("text" , "refContactRelation" , true ,"refContactRelation");
-  row.appendChild(refContactRelation);
-
-  const deleteTd = createDeleteTd();
-  row.appendChild(deleteTd);
-  
-
-  workExpBody.appendChild(row);
-}
-
-
-
-let lang_count=-1;
-
-//add row for languages
-function addLangRow(){
-
-  lang_count++;
-  console.log(`after add counter ${lang_count}`);
-
-  const row = document.createElement('tr');
-  
-  const langInput = createInputTd("text" , "languages" , true, "languages");
-  row.appendChild(langInput);
-  
-  const checkbox1 = createInputTd("checkbox" , "canRead", false ,"canRead"); 
-  row.appendChild(checkbox1);
-
-  const checkbox2 = createInputTd("checkbox" , "canWrite", false , "canWrite");
-  row.appendChild(checkbox2);
-  
-  const checkbox3 = createInputTd("checkbox" , "canSpeak", false ,"canSpeak");
-  row.appendChild(checkbox3);
-  
-  const deleteTd = createDeleteTd("lang_count");
-  row.appendChild(deleteTd);
-  
-  langBody.appendChild(row);
-}
-
-let tech_counte=-1;
-function addTechRow(){
-
-  tech_counte++;
-  console.log(`after add counter ${tech_counte}`);
-
-  const row = document.createElement('tr');
-  const techInput = createInputTd("text" , "technologies" , true, "technologies");
-  row.appendChild(techInput);
-
-  const radio1 = createInputTd("radio" , "beginer" , false , "beginer");
-  // radio1.childNodes().name="technology"
-  row.appendChild(radio1);
-
-  const radio2 = createInputTd("radio" , "intermediate" , false ,"intermediate");
-  // radio2.childNodes().name="technology"
-  row.appendChild(radio2);
-
-  const radio3 = createInputTd("radio" , "expert" , false, "expert");
-  row.appendChild(radio3);
-
-  const deleteTd = createDeleteTd("tech_counte");
-  row.appendChild(deleteTd);
-
-
-  techBody.appendChild(row);
-}
-
-function createInputTd(type, className, required, fieldName) {
-  const tdEle = document.createElement("td");
-
-  const inputEle = document.createElement("input");
-
-  inputEle.type = type;
-  inputEle.className = className;
-  inputEle.required = required;
-  inputEle.style.margin = "3px 10px";
-  
-  if( 
-        (className ==="languages" ) 
-        || (type==="checkbox" && (className==="canRead" || className==="canWrite" || className==="canSpeak"))
-      ){
-        inputEle.name= `languages[${lang_count}][${fieldName}]`;
-  }
-  else if( className === "technologies"){
-        inputEle.name=`technologies[${tech_counte}][technologies]`;
-  }
-  else if(type==="radio" && (className==="beginer" || className==="intermediate" || className==="expert")){
-        inputEle.name=`technologies[${tech_counte}][level]`;
-        inputEle.value=fieldName;
-  }
-  else{
-    inputEle.name = fieldName+"[]";
-  }
-
-  tdEle.appendChild(inputEle);
-  return tdEle;
-}
-
-function createDeleteTd(counterName) {
-  const tdEle = document.createElement("td");
-
-  const btn = document.createElement("button");
-  btn.addEventListener("click", () => {
-    if(counterName==="lang_count"){
-      if(lang_count<0){
-        alert("no rows to delete");
-        return;
-      }else{
-        lang_count--;
-        console.log(`after decriment the lang_count is ${lang_count}`);
-      }
-    }else if(counterName==="tech_counte"){
-      if(tech_counte<0){
-        alert("no rows to delete");
-        return;
-      }else{
-        tech_counte--;
-        console.log(`after decriment the tech_counte is ${tech_counte}`);
-      }
-    }else if(!counterName || counterName===null){
-      console.log(`no counter needed for this`);
-      
+function validateCurrentStep() {
+  const fields = steps[currentStep].querySelectorAll("input, select");
+  for (const field of fields) {
+    if (!field.checkValidity()) {
+      field.reportValidity();
+      return false;
     }
-    let deleteTr = btn.closest("tr");
-    deleteTr.parentElement.removeChild(deleteTr); //MUST USE removeChild , only remove will delete all the tr in the table
-  });
-
-  btn.innerText = "delete";
-  btn.style.backgroundColor = "red"
-  btn.style.color="white";
-
-  tdEle.appendChild(btn);
-  return tdEle;
-}
-//bind event to addEduBtn
-addEduBtn.addEventListener("click", addEduRow);
-addExpBtn.addEventListener("click" , addExpRow);
-addLangBtn.addEventListener("click" , addLangRow);
-addTechBtn.addEventListener("click" , addTechRow)
-
-
-//preferred location functions
-
-async function getPrefLocation(){
-  
-  const response = await fetch("/api/getPrefLocation");
-  if(!response.ok){
-    console.log(`response is not ok in getPrefLocation`);
-  } 
-  const locations = await response.json();
-
-  const location1= createSelect("location1", locations);
-  const location2= createSelect("location2", locations);
-
-  preferredLocationDiv1.appendChild(location1);
-  preferredLocationDiv2.appendChild(location2);
-}
-
-async function getPrefDepartment(){
-  const response = await fetch("/api/getPrefDepartment");
-  if(!response.ok){
-    console.log(`response is not ok in getPrefDepartment`);
   }
-  const data = await response.json();
-
-  const departmentSelect = createSelect("department" , data);
-  departmentDiv.appendChild(departmentSelect);
+  return true;
 }
 
+function makeDeleteButton(onDelete) {
+  const td = document.createElement("td");
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.textContent = "Delete";
+  btn.addEventListener("click", onDelete);
+  td.appendChild(btn);
+  return td;
+}
 
-function createSelect(name , options){
-  const selectTag = document.createElement('select');
-  
-  selectTag.name=name;
-  options.forEach(e=>{
-    const option = document.createElement('option');
-    option.textContent = e.optionName;
-    selectTag.appendChild(option);
+function createInputCell(type, name, value = "", required = true) {
+  const td = document.createElement("td");
+  const input = document.createElement("input");
+  input.type = type;
+  input.name = name;
+  input.required = required;
+  input.value = value || "";
+  td.appendChild(input);
+  return td;
+}
+
+function renderEducationRow(item = {}) {
+  const tbody = document.getElementById("eduBody");
+  const row = document.createElement("tr");
+  const idx = tbody.children.length;
+  row.appendChild(createInputCell("text", `education[${idx}][courseName]`, item.courseName));
+  row.appendChild(createInputCell("text", `education[${idx}][passingYear]`, item.passingYear));
+  row.appendChild(createInputCell("text", `education[${idx}][uniBoard]`, item.uniBoard));
+  row.appendChild(createInputCell("text", `education[${idx}][result]`, item.result));
+  row.appendChild(makeDeleteButton(() => row.remove()));
+  tbody.appendChild(row);
+}
+
+function renderWorkRow(item = {}) {
+  const tbody = document.getElementById("workBody");
+  const row = document.createElement("tr");
+  const idx = tbody.children.length;
+  row.appendChild(createInputCell("text", `workExperience[${idx}][compName]`, item.compName));
+  row.appendChild(createInputCell("date", `workExperience[${idx}][fromDate]`, item.fromDate ? String(item.fromDate).slice(0, 10) : ""));
+  row.appendChild(createInputCell("date", `workExperience[${idx}][toDate]`, item.toDate ? String(item.toDate).slice(0, 10) : ""));
+  row.appendChild(createInputCell("text", `workExperience[${idx}][annualPackage]`, item.annualPackage));
+  row.appendChild(createInputCell("text", `workExperience[${idx}][reasonToLeave]`, item.reasonToLeave));
+  row.appendChild(createInputCell("text", `workExperience[${idx}][refContactNo]`, item.refContactNo));
+  row.appendChild(createInputCell("text", `workExperience[${idx}][refContactName]`, item.refContactName));
+  row.appendChild(createInputCell("text", `workExperience[${idx}][refContactRelation]`, item.refContactRelation));
+  row.appendChild(makeDeleteButton(() => row.remove()));
+  tbody.appendChild(row);
+}
+
+function renderLanguageRow(item = {}) {
+  const tbody = document.getElementById("langBody");
+  const row = document.createElement("tr");
+  const idx = tbody.children.length;
+  row.appendChild(createInputCell("text", `languages[${idx}][languageName]`, item.languageName));
+  ["canRead", "canWrite", "canSpeak"].forEach((key) => {
+    const td = document.createElement("td");
+    const input = document.createElement("input");
+    input.type = "checkbox";
+    input.name = `languages[${idx}][${key}]`;
+    input.checked = Boolean(item[key]);
+    td.appendChild(input);
+    row.appendChild(td);
+  });
+  row.appendChild(makeDeleteButton(() => row.remove()));
+  tbody.appendChild(row);
+}
+
+function renderTechRow(item = {}) {
+  const tbody = document.getElementById("techBody");
+  const row = document.createElement("tr");
+  const idx = tbody.children.length;
+  row.appendChild(createInputCell("text", `technologies[${idx}][techName]`, item.techName));
+
+  const td = document.createElement("td");
+  const select = document.createElement("select");
+  select.name = `technologies[${idx}][expLevel]`;
+  select.required = true;
+  ["beginner", "intermediate", "expert"].forEach((level) => {
+    const option = document.createElement("option");
+    option.value = level;
+    option.textContent = level;
+    if (String(item.expLevel || "").toLowerCase() === level) option.selected = true;
+    select.appendChild(option);
+  });
+  td.appendChild(select);
+  row.appendChild(td);
+  row.appendChild(makeDeleteButton(() => row.remove()));
+  tbody.appendChild(row);
+}
+
+function buildSelect(mountId, name, labelText, options, selectedValue, required = true) {
+  const mount = document.getElementById(mountId);
+  mount.innerHTML = "";
+  const label = document.createElement("label");
+  label.textContent = labelText;
+  const select = document.createElement("select");
+  select.name = name;
+  select.required = required;
+  const ph = document.createElement("option");
+  ph.value = "";
+  ph.textContent = "Select";
+  ph.disabled = true;
+  ph.selected = !selectedValue;
+  select.appendChild(ph);
+  options.forEach((o) => {
+    const op = document.createElement("option");
+    op.value = o.optionName;
+    op.textContent = o.optionName;
+    if (selectedValue === o.optionName) op.selected = true;
+    select.appendChild(op);
+  });
+  mount.appendChild(label);
+  mount.appendChild(select);
+  return select;
+}
+
+async function loadStaticDropdowns() {
+  const [g, r, s, l, d] = await Promise.all([
+    fetch("/api/getGender").then((x) => x.json()),
+    fetch("/api/getRelationship").then((x) => x.json()),
+    fetch("/api/getState").then((x) => x.json()),
+    fetch("/api/getPrefLocation").then((x) => x.json()),
+    fetch("/api/getPrefDepartment").then((x) => x.json()),
+  ]);
+
+  const genderBlock = document.getElementById("genderBlock");
+  genderBlock.innerHTML = "<label>Gender</label><br/>";
+  g.forEach((item) => {
+    const id = `g_${item.optionName}`;
+    genderBlock.innerHTML += `<input type="radio" name="gender" id="${id}" value="${item.optionName}" ${user.basic.gender === item.optionName ? "checked" : ""} required><label for="${id}">${item.optionName}</label>`;
   });
 
-  return selectTag;
+  buildSelect("relationshipBlock", "relationship", "Relationship", r, user.basic.relationship, true);
+  const stateSelect = buildSelect("stateBlock", "state", "State", s, user.basic.state, true);
+  buildSelect("preferredLocation1Block", "location1", "Preferred Location 1", l, user.preference.location1, true);
+  buildSelect("preferredLocation2Block", "location2", "Preferred Location 2", l, user.preference.location2, false);
+  buildSelect("departmentBlock", "department", "Department", d, user.preference.department, true);
+
+  async function loadCities() {
+    const cities = await fetch(`/api/getCity?state=${encodeURIComponent(stateSelect.value)}`).then((x) => x.json());
+    buildSelect("cityBlock", "city", "City", cities, user.basic.city, true);
+  }
+  stateSelect.addEventListener("change", loadCities);
+  if (user.basic.state) await loadCities();
 }
 
-getGender();
-getRelationship();
-getState();
-addEduRow();
-addExpRow();
-addLangRow();
-addTechRow();
-getPrefLocation()
-getPrefDepartment();
+document.getElementById("addEduBtn").addEventListener("click", () => renderEducationRow());
+document.getElementById("addWorkBtn").addEventListener("click", () => renderWorkRow());
+document.getElementById("addLangBtn").addEventListener("click", () => renderLanguageRow());
+document.getElementById("addTechBtn").addEventListener("click", () => renderTechRow());
 
+prevBtn.addEventListener("click", () => {
+  if (currentStep > 0) {
+    currentStep -= 1;
+    showStep(currentStep);
+  }
+});
+nextBtn.addEventListener("click", () => {
+  if (!validateCurrentStep()) {
+    stepValidationMessage.textContent = "Please complete this step first.";
+    return;
+  }
+  if (currentStep < steps.length - 1) {
+    currentStep += 1;
+    showStep(currentStep);
+  }
+});
 
+document.getElementById("updateForm").addEventListener("submit", (e) => {
+  if (!validateCurrentStep()) {
+    e.preventDefault();
+    stepValidationMessage.textContent = "Please complete required fields before submit.";
+  }
+});
 
+async function init() {
+  showStep(0);
+  await loadStaticDropdowns();
+  (user.education || []).forEach(renderEducationRow);
+  (user.workExperience || []).forEach(renderWorkRow);
+  (user.languages || []).forEach(renderLanguageRow);
+  (user.technologies || []).forEach(renderTechRow);
+  if (!(user.education || []).length) renderEducationRow();
+  if (!(user.workExperience || []).length) renderWorkRow();
+  if (!(user.languages || []).length) renderLanguageRow();
+  if (!(user.technologies || []).length) renderTechRow();
+}
 
-//submit form is remaining 
-
-// document.getElementById('submitBtn').addEventListener("click" , async (e)=>{
-//   e.preventDefault();
-  
-//   const data ={
-//     firstName : document.getElementById("firstName").value
-//   }
-//   data.forEach(e=>{
-//     console.log(e);
-//   })
-
-//   const formData = new FormData();
-//     formData.append("firstname" , data)
-  
-  // try {
-  //   const response = await fetch('form/api/submit', {
-  //     method: 'POST',
-  //     body: formData
-  //   });
-  //   console.log(await response.json());
-  // } catch (error) {
-  //   console.error('Error:', error);
-  // }
-// })
+init();

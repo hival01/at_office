@@ -3,225 +3,83 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>job form v2</title>
+    <title>Update Applicant</title>
     <link rel="stylesheet" href="/css/style.css" />
+    <style>
+      .step-fieldset { display: none; }
+      .step-fieldset.active { display: block; }
+      .step-error { color: #b91c1c; margin: 8px 0; }
+    </style>
   </head>
   <body>
-    <form method="POST" action="/api/submit">
-      <h1>Job apllication form v2</h1>
-      <fieldset>
-        <legend>Basic Details</legend>
-        <div class="basicDetails">
-          <div class="basicDetails1">
-            <div>
-              <label for="name">First Name</label>
-              <input type="text" id="firstName" name="firstName" required value="<%= data.basic_details[0].firstName %>"/>
+    <h1>Update Applicant #<%= applicantId %></h1>
+    <p><a href="/applications">Back to list</a></p>
+    <% if (formError) { %><p class="step-error"><%= formError %></p><% } %>
 
-              <br /><br />
-              <label for="lastName">Last Name</label>
-              <input type="text" id="lastName" name="lastName" required value="<%= data.basic_details[0].lastName %>"/>
-
-              <br /><br />
-              <label for="email">Email</label>
-              <input type="text" id="email" name="email" required value="<%= data.basic_details[0].email %>"/>
-
-              <br /><br />
-              <label for="phoneNo">Phone Number</label>
-              <input type="text" name="phoneNo" id="phoneNo" required value="<%= data.basic_details[0].phoneNo %>"/>
-            </div>
-            <br>
-            <div id="gender"></div>
-              <br>
-            <div id="relationship"></div>
-          </div>
-
-          <div>
-            <label for="address1">Address 1</label><br>
-            <input type="text" name="address1" id="address1" style="width: 300px; height: 50px" required value="<%= data.basic_details[0].address1 %>"/>
-
-            <br><br>
-            <label for="address1">Address 2</label><br>
-            <input type="text" name="address2" id="address2" style="width: 300px; height: 50px" required value="<%= data.basic_details[0].address2 %>"/>
-
-            <br><br>
-            <div id="state"></div>
-            <br>
-            <div id="city">
-              <!-- dummy select tag , this will be removed when state is selected -->
-             City <select style="width: 100px; ;"><option disabled selected>select City</option></select>
-            </div>
-
-            <br>
-            <label for="zip">zip code</label>
-            <input type="number" id="zip" placeholder="123456" name="zip" minlength="6" maxlength="6" required value="<%= data.basic_details[0].zipcode%>"" >
-
-            <br /><br />
-              <label for="dob">Date of Birth</label>
-              <input type="date" id="dob" name="dob" required value="<%= data.basic_details[0].dob.toISOString().slice(0,10) %>"/>
-
-
-          </div>
-        </div>
+    <form id="updateForm" method="POST" action="/applications/<%= applicantId %>/update">
+      <fieldset class="step-fieldset active"><legend>Step 1 - Basic</legend>
+        <label>First Name</label><input type="text" name="firstName" required value="<%= basic.firstName || '' %>" /><br /><br />
+        <label>Last Name</label><input type="text" name="lastName" required value="<%= basic.lastName || '' %>" /><br /><br />
+        <label>Email</label><input type="email" name="email" required value="<%= basic.email || '' %>" /><br /><br />
+        <label>Phone</label><input type="text" name="phoneNo" required value="<%= basic.phoneNo || '' %>" /><br /><br />
+        <label>Designation</label><input type="text" name="designation" required value="<%= basic.designation || '' %>" /><br /><br />
+        <div id="genderBlock"></div><br />
+        <div id="relationshipBlock"></div>
       </fieldset>
 
-      <fieldset>
-        <legend>Education Status</legend>
-
-        <button id="addEduBtn">Add Row</button>
-        <table border="1" id="eduTable">
-          <thead>
-            <th>course</th>
-            <th>passing year</th>
-            <th>uni / board</th>
-            <th>result</th>
-          </thead>
-          <tbody id="eduBody">
-            
-          </tbody>
-
-
-        </table>
+      <fieldset class="step-fieldset"><legend>Step 2 - Address</legend>
+        <label>Address 1</label><input type="text" name="address1" required value="<%= basic.address1 || '' %>" /><br /><br />
+        <label>Address 2</label><input type="text" name="address2" value="<%= basic.address2 || '' %>" /><br /><br />
+        <div id="stateBlock"></div><br />
+        <div id="cityBlock"></div><br />
+        <label>Zip</label><input type="number" name="zip" required value="<%= basic.zipcode || '' %>" /><br /><br />
+        <label>DOB</label><input type="date" name="dob" required value="<%= basic.dob ? new Date(basic.dob).toISOString().slice(0, 10) : '' %>" />
       </fieldset>
 
-      <fieldset>
-        <legend>Work Experience</legend>
-
-         <button id="addExpBtn">Add Row</button>
-         <br>
-
-        <table border="1">
-          <thead>
-            <th>Company Name</th>
-            <th>From date</th>
-            <th>To date</th>
-            <th>Annual package</th>
-            <th>Reason to leave</th>
-            <th>ref. Contact no</th>
-            <th>ref. Contact name</th>
-            <th>ref. Contact relation</th>
-          </thead>
-
-          <tbody id="workExpBody">
-
-          </tbody>
-          
-        </table>
+      <fieldset class="step-fieldset"><legend>Step 3 - Education</legend>
+        <button type="button" id="addEduBtn">Add Row</button>
+        <table border="1"><thead><tr><th>Course</th><th>Passing Year</th><th>University</th><th>Result</th><th>Action</th></tr></thead><tbody id="eduBody"></tbody></table>
       </fieldset>
 
-
-      <br>
-      <fieldset>
-        <legend>Language Known</legend>
-        <button id="addLangBtn">Add Row</button> <br><br>
-        
-        <table border="1">
-          <thead>
-            <th>Language</th>
-            <th>Read</th>
-            <th>write</th>
-            <th>speak</th>
-          </thead>
-          <tbody id="langBody">
-
-          </tbody>
-        </table>
+      <fieldset class="step-fieldset"><legend>Step 4 - Work Experience</legend>
+        <button type="button" id="addWorkBtn">Add Row</button>
+        <table border="1"><thead><tr><th>Company</th><th>From</th><th>To</th><th>Package</th><th>Reason</th><th>Ref No</th><th>Ref Name</th><th>Ref Relation</th><th>Action</th></tr></thead><tbody id="workBody"></tbody></table>
       </fieldset>
 
-      <fieldset>
-        <legend>Technology Known</legend>
-        <button id="addTechBtn">Add Row</button>
-        <table border="1">
-          <thead>
-            <th>Technologies</th>
-            <th>Beginner</th>
-            <th>Intermediate</th>
-            <th>Expert</th>
-          </thead>
-
-          <tbody id="techBody">
-
-          </tbody>
-
-        </table>
+      <fieldset class="step-fieldset"><legend>Step 5 - Languages & Technologies</legend>
+        <h4>Languages</h4>
+        <button type="button" id="addLangBtn">Add Row</button>
+        <table border="1"><thead><tr><th>Language</th><th>Read</th><th>Write</th><th>Speak</th><th>Action</th></tr></thead><tbody id="langBody"></tbody></table>
+        <h4>Technologies</h4>
+        <button type="button" id="addTechBtn">Add Row</button>
+        <table border="1"><thead><tr><th>Technology</th><th>Level</th><th>Action</th></tr></thead><tbody id="techBody"></tbody></table>
       </fieldset>
 
-      <fieldset>
-        <legend>Preferences</legend>
-        <table>
-          <tr >
-            <td style="padding-right: 60px;">
-              <label> Preferred Location 1</label>
-              <div id="preferredLocation1">
-
-              </div>
-
-              <br>
-              <label> Preferred Location 2</label>
-              <div id="preferredLocation2">
-
-              </div>
-            </td>
-
-            <td style="padding-right: 60px;">
-              <label for="notice_period">Notice Period</label>
-
-              <input
-                type="number"
-                id="noticePeriod"
-                name="noticePeriod"
-                placeholder="30 days"
-                required
-                min="0"
-              />
-              <br /><br />
-              <label for="expected_ctc">Expected CTC</label>
-
-              <input
-                type="number"
-                id="expectedCtc"
-                name="expectedCtc"
-                placeholder="600000"
-                required
-              />
-              <br /><br />
-
-              <label for="current_ctc">Current CTC</label>
-
-              <input
-                type="number"
-                id="currentCtc"
-                name="currentCtc"
-                placeholder="500000"
-                required
-              />
-            </td>
-
-            <td>
-              <label>Department</label>
-              <div id="department">
-            
-              </div>
-            </td>
-          </tr>
-
-        </table>
+      <fieldset class="step-fieldset"><legend>Step 6 - Preferences</legend>
+        <div id="preferredLocation1Block"></div><br />
+        <div id="preferredLocation2Block"></div><br />
+        <div id="departmentBlock"></div><br />
+        <label>Notice Period</label><input type="number" name="noticePeriod" required value="<%= preference ? preference.noticePeriod : '' %>" /><br /><br />
+        <label>Expected CTC</label><input type="number" name="expectedCtc" required value="<%= preference ? preference.expectedCTC : '' %>" /><br /><br />
+        <label>Current CTC</label><input type="number" name="currentCtc" required value="<%= preference ? preference.currentCTC : '' %>" />
       </fieldset>
 
-
-
-
-
-      <br><br>
-      <div id="buttons">
-        <button type="submit" id="submitBtn">Submit</button>
-        <button type="reset" id="resetBtn">Reset</button>
-      </div>
+      <p id="stepValidationMessage" class="step-error"></p>
+      <button type="button" id="prevBtn">Previous</button>
+      <button type="button" id="nextBtn">Next</button>
+      <button type="submit" id="submitBtn" style="display:none">Submit / Update</button>
     </form>
 
-     <script>
-      const userdata = <%- JSON.stringify(data) %>;
+    <script>
+      window.userdata = {
+        basic: <%- JSON.stringify(basic) %>,
+        preference: <%- JSON.stringify(preference || {}) %>,
+        education: <%- JSON.stringify(education || []) %>,
+        workExperience: <%- JSON.stringify(workExperience || []) %>,
+        languages: <%- JSON.stringify(languages || []) %>,
+        technologies: <%- JSON.stringify(technologies || []) %>
+      };
     </script>
-
     <script src="/js/updateForm.js"></script>
   </body>
 </html>

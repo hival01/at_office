@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Applicant Details</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f4f6fb;
+        max-width: 1100px;
+        margin: 24px auto;
+        padding: 0 14px 30px;
+        color: #1f2937;
+      }
+      .page-header {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 14px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .page-title {
+        margin: 0;
+      }
+      .content-card {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 16px;
+      }
+      fieldset {
+        margin-bottom: 16px;
+        padding: 14px;
+        border: 1px solid #d9dee8;
+        border-radius: 10px;
+        background: #fafbff;
+      }
+      legend {
+        font-weight: 700;
+        padding: 0 8px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(220px, 1fr));
+        gap: 12px 16px;
+      }
+      .field label {
+        display: block;
+        font-size: 12px;
+        margin-bottom: 5px;
+        color: #4b5563;
+      }
+      .field input {
+        width: 100%;
+        padding: 9px 10px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        background: #fff;
+        color: #111827;
+      }
+      .row-box {
+        border: 1px solid #dbe3f1;
+        border-radius: 10px;
+        background: #ffffff;
+        padding: 12px;
+        margin-bottom: 12px;
+      }
+      .row-title {
+        margin-bottom: 10px;
+        font-size: 13px;
+        color: #4338ca;
+      }
+      .empty-state {
+        margin: 0;
+        padding: 10px;
+        border: 1px dashed #cbd5e1;
+        border-radius: 8px;
+        background: #fff;
+        color: #6b7280;
+      }
+      .actions {
+        display: flex;
+        gap: 10px;
+        margin: 0;
+      }
+      .btn {
+        padding: 9px 14px;
+        text-decoration: none;
+        border: 1px solid #374151;
+        border-radius: 8px;
+        background: #fff;
+        color: #111827;
+        cursor: pointer;
+        font-size: 14px;
+      }
+      .btn-primary {
+        background: #1d4ed8;
+        border-color: #1d4ed8;
+        color: #fff;
+      }
+      .btn-danger {
+        background: #b91c1c;
+        border-color: #b91c1c;
+        color: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-header">
+      <h1 class="page-title">Applicant Details #<%= applicantId %></h1>
+      <div class="actions">
+        <a class="btn" href="/applications">Back to List</a>
+        <a class="btn btn-primary" href="/applications/<%= applicantId %>/edit">Edit User</a>
+      </div>
+    </div>
+    <div class="content-card">
+    <fieldset>
+      <legend>Basic Details</legend>
+      <div class="grid">
+        <div class="field"><label>First Name</label><input disabled value="<%= basic.firstName || '' %>" /></div>
+        <div class="field"><label>Last Name</label><input disabled value="<%= basic.lastName || '' %>" /></div>
+        <div class="field"><label>Email</label><input disabled value="<%= basic.email || '' %>" /></div>
+        <div class="field"><label>Phone</label><input disabled value="<%= basic.phoneNo || '' %>" /></div>
+        <div class="field"><label>Designation</label><input disabled value="<%= basic.designation || '' %>" /></div>
+        <div class="field"><label>Gender</label><input disabled value="<%= basic.gender || '' %>" /></div>
+        <div class="field"><label>Relationship</label><input disabled value="<%= basic.relationship || '' %>" /></div>
+        <div class="field"><label>Address 1</label><input disabled value="<%= basic.address1 || '' %>" /></div>
+        <div class="field"><label>Address 2</label><input disabled value="<%= basic.address2 || '' %>" /></div>
+        <div class="field"><label>State</label><input disabled value="<%= basic.state || '' %>" /></div>
+        <div class="field"><label>City</label><input disabled value="<%= basic.city || '' %>" /></div>
+        <div class="field"><label>Zip</label><input disabled value="<%= basic.zipcode || '' %>" /></div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Preferences</legend>
+      <% if (preference) { %>
+      <div class="grid">
+        <div class="field"><label>Preferred Location 1</label><input disabled value="<%= preference.location1 || '' %>" /></div>
+        <div class="field"><label>Preferred Location 2</label><input disabled value="<%= preference.location2 || '' %>" /></div>
+        <div class="field"><label>Department</label><input disabled value="<%= preference.department || '' %>" /></div>
+        <div class="field"><label>Notice Period</label><input disabled value="<%= preference.noticePeriod || '' %>" /></div>
+        <div class="field"><label>Expected CTC</label><input disabled value="<%= preference.expectedCTC || '' %>" /></div>
+        <div class="field"><label>Current CTC</label><input disabled value="<%= preference.currentCTC || '' %>" /></div>
+      </div>
+      <% } else { %>
+      <p class="empty-state">No preference record found.</p>
+      <% } %>
+    </fieldset>
+
+    <fieldset>
+      <legend>Education</legend>
+      <% if (education && education.length) { %>
+        <% education.forEach((edu, index) => { %>
+        <div class="row-box">
+          <div class="row-title"><strong>Education Entry <%= index + 1 %></strong></div>
+          <div class="grid">
+            <div class="field"><label>Course</label><input disabled value="<%= edu.courseName || '' %>" /></div>
+            <div class="field"><label>Passing Year</label><input disabled value="<%= edu.passingYear || '' %>" /></div>
+            <div class="field"><label>University/Board</label><input disabled value="<%= edu.uniBoard || '' %>" /></div>
+            <div class="field"><label>Result</label><input disabled value="<%= edu.result || '' %>" /></div>
+          </div>
+        </div>
+        <% }) %>
+      <% } else { %>
+      <p class="empty-state">No education entries found.</p>
+      <% } %>
+    </fieldset>
+
+    <fieldset>
+      <legend>Work Experience</legend>
+      <% if (workExperience && workExperience.length) { %>
+        <% workExperience.forEach((work, index) => { %>
+        <div class="row-box">
+          <div class="row-title"><strong>Work Entry <%= index + 1 %></strong></div>
+          <div class="grid">
+            <div class="field"><label>Company</label><input disabled value="<%= work.compName || '' %>" /></div>
+            <div class="field"><label>From Date</label><input disabled value="<%= work.fromDate ? String(work.fromDate).slice(0,10) : '' %>" /></div>
+            <div class="field"><label>To Date</label><input disabled value="<%= work.toDate ? String(work.toDate).slice(0,10) : '' %>" /></div>
+            <div class="field"><label>Annual Package</label><input disabled value="<%= work.annualPackage || '' %>" /></div>
+            <div class="field"><label>Reason To Leave</label><input disabled value="<%= work.reasonToLeave || '' %>" /></div>
+            <div class="field"><label>Ref Contact No</label><input disabled value="<%= work.refContactNo || '' %>" /></div>
+            <div class="field"><label>Ref Contact Name</label><input disabled value="<%= work.refContactName || '' %>" /></div>
+            <div class="field"><label>Ref Contact Relation</label><input disabled value="<%= work.refContactRelation || '' %>" /></div>
+          </div>
+        </div>
+        <% }) %>
+      <% } else { %>
+      <p class="empty-state">No work experience entries found.</p>
+      <% } %>
+    </fieldset>
+
+    <fieldset>
+      <legend>Languages</legend>
+      <% if (languages && languages.length) { %>
+        <% languages.forEach((language, index) => { %>
+        <div class="row-box">
+          <div class="row-title"><strong>Language Entry <%= index + 1 %></strong></div>
+          <div class="grid">
+            <div class="field"><label>Language</label><input disabled value="<%= language.languageName || '' %>" /></div>
+            <div class="field"><label>Can Read</label><input disabled value="<%= language.canRead ? 'Yes' : 'No' %>" /></div>
+            <div class="field"><label>Can Write</label><input disabled value="<%= language.canWrite ? 'Yes' : 'No' %>" /></div>
+            <div class="field"><label>Can Speak</label><input disabled value="<%= language.canSpeak ? 'Yes' : 'No' %>" /></div>
+          </div>
+        </div>
+        <% }) %>
+      <% } else { %>
+      <p class="empty-state">No language entries found.</p>
+      <% } %>
+    </fieldset>
+
+    <fieldset>
+      <legend>Technologies</legend>
+      <% if (technologies && technologies.length) { %>
+        <% technologies.forEach((tech, index) => { %>
+        <div class="row-box">
+          <div class="row-title"><strong>Technology Entry <%= index + 1 %></strong></div>
+          <div class="grid">
+            <div class="field"><label>Technology</label><input disabled value="<%= tech.techName || '' %>" /></div>
+            <div class="field"><label>Experience Level</label><input disabled value="<%= tech.expLevel || '' %>" /></div>
+          </div>
+        </div>
+        <% }) %>
+      <% } else { %>
+      <p class="empty-state">No technology entries found.</p>
+      <% } %>
+    </fieldset>
+
+    <form
+      method="POST"
+      action="/applications/<%= applicantId %>/delete"
+      onsubmit="return confirm('Are you sure you want to delete this applicant?');"
+    >
+      <button class="btn btn-danger" type="submit">Delete Applicant</button>
+    </form>
+    </div>
+  </body>
+</html>

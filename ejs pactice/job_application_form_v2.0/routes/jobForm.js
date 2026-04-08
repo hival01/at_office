@@ -4,6 +4,9 @@ const controller = require("../controllers/formController");
 
 
 route.get("/", controller.getform)
+route.get("/applications", controller.listApplicants);
+route.get("/applications/:id", controller.getApplicantDetails);
+route.get("/applications/:id/edit", controller.getUser);
 route.get("/api/getGender", controller.getGender)
 route.get("/api/getRelationship" , controller.getRelationship);
 route.get("/api/getState" , controller.getState);
@@ -13,6 +16,8 @@ route.get("/api/getPrefDepartment" , controller.getPrefDepartment);
 route.get("/show/:id" , controller.getUser);
 
 route.post("/api/submit", controller.submit);
+route.post("/applications/:id/update", controller.updateApplicant);
+route.post("/applications/:id/delete", controller.deleteApplicant);
 
 
 

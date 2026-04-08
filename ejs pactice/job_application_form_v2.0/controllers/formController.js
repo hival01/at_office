@@ -1,5 +1,11 @@
-// const model = require("../models/form");
 const db = require("../config/database");
+const model = require("../models/form");
+
+function normalizeArray(field) {
+  if (Array.isArray(field)) return field;
+  if (!field) return [];
+  return [field];
+}
 
 exports.getform = (req, res) => {
   res.render("jobApplicationForm");
@@ -7,108 +13,66 @@ exports.getform = (req, res) => {
 
 exports.getGender = async (req, res) => {
   try {
-    const [result] = await db.execute(
-      `select selectId from selectMaster where selectName ="gender"`,
-    );
-    const selectId = result[0].selectId;
-    const [result1] = await db.execute(
-      `select * from optionMaster where selectId =${selectId}`,
-    );
-
-    res.json(result1);
+    const options = await model.getSelectOptions("gender");
+    res.json(options);
   } catch (error) {
     console.log(`getGender error: ${error}`);
+    res.status(500).json({ message: "Failed to load gender options." });
   }
 };
 
 exports.getRelationship = async (req, res) => {
   try {
-    const [result] = await db.execute(
-      `select selectId from selectMaster where selectName="relationship"`,
-    );
-    const selectId = result[0].selectId;
-    const [result1] = await db.execute(
-      `select * from optionMaster where selectId =${selectId}`,
-    );
-    res.json(result1);
+    const options = await model.getSelectOptions("relationship");
+    res.json(options);
   } catch (error) {
     console.log(`error in getrelationship ${error}`);
+    res.status(500).json({ message: "Failed to load relationship options." });
   }
 };
 
 exports.getState = async (req, res) => {
   try {
-    const [selectResult] = await db.execute(
-      `select selectId from selectMaster where selectName="state"`,
-    );
-    const selectId = selectResult[0].selectId;
-
-    const [optionResult] = await db.execute(
-      `select * from optionMaster where selectId =${selectId}`,
-    );
-
-    res.json(optionResult);
+    const options = await model.getSelectOptions("state");
+    res.json(options);
   } catch (error) {
     console.log(`error in getrelationship ${error}`);
+    res.status(500).json({ message: "Failed to load state options." });
   }
 };
 
 exports.getCity = async (req, res) => {
   try {
     const stateName = req.query.state;
-
-    const [selectResult] = await db.execute(
-      `select selectId from selectMaster where selectname="city"`,
-    );
-    const selectId = selectResult[0].selectId;
-
-    const [optionResult] = await db.execute(
-      `select * from optionMaster where selectId=${selectId} and parentId=(select optionId from optionMaster where optionName="${stateName}")`,
-    );
-
-    res.json(optionResult);
+    const cities = await model.getCityOptions(stateName);
+    res.json(cities);
   } catch (error) {
     console.log(`error in getcity ${error}`);
+    res.status(500).json({ message: "Failed to load city options." });
   }
 };
 
 exports.getPrefLocation = async (req, res) => {
   try {
-    const [result] = await db.execute(
-      `select selectId from selectMaster where selectName="prefLocation"`,
-    );
-    if (result) {
-      const selectId = result[0].selectId;
-
-      const [locations] = await db.execute(
-        `select * from optionMaster where selectId =${selectId}`,
-      );
-      res.send(locations);
-    }
+    const locations = await model.getSelectOptions("prefLocation");
+    res.send(locations);
   } catch (error) {
     console.log(`error in getPrefLocation ${error}`);
+    res.status(500).json({ message: "Failed to load preferred locations." });
   }
 };
 
 exports.getPrefDepartment = async (req, res) => {
   try {
-    const [result] = await db.execute(
-      `select selectId from selectMaster where selectName="prefDepartment"`,
-    );
-    const selectId = result[0].selectId;
-
-    const [departments] = await db.execute(
-      `select * from optionMaster where selectId=${selectId}`,
-    );
+    const departments = await model.getSelectOptions("prefDepartment");
     res.json(departments);
   } catch (error) {
     console.log(`error in getPrefDepartment ${error}`);
+    res.status(500).json({ message: "Failed to load preferred departments." });
   }
 };
 exports.submit = async (req, res) => {
   try {
-    console.log(req.body);
-
     const {
       firstName,
       lastName,
@@ -123,23 +87,6 @@ exports.submit = async (req, res) => {
       city,
       zip,
       dob,
-
-      courses,
-      passingYears,
-      unis,
-      results,
-
-      compName,
-      fromDate,
-      toDate,
-      annualPkg,
-      reasonToLeave,
-      refContactNo,
-      refContactName,
-      refContactRelation,
-
-      languages,
-      technologies,
       location1,
       location2,
       noticePeriod,
@@ -148,7 +95,14 @@ exports.submit = async (req, res) => {
       department,
     } = req.body;
 
-    //instert all the data in db
+    const education = normalizeArray(req.body.education);
+    const workExperience = normalizeArray(req.body.workExperience);
+    const languages = normalizeArray(req.body.languages);
+    const technologies = normalizeArray(req.body.technologies);
+
+    if (!education.length || !workExperience.length || !languages.length || !technologies.length) {
+      return res.status(400).send("Dynamic sections are required (education, work experience, languages, technologies).");
+    }
 
     let basicQuery = `insert into basic_details 
         (firstName, lastName, designation, email, phoneNo, address1, address2, zipcode, dob,gender , relationship,state,city)
@@ -172,79 +126,7 @@ exports.submit = async (req, res) => {
     ]);
 
     const applicantId = resultBasic[0].insertId;
-    console.log(applicantId);
-
-    //insert into education tabel
-
-    const eduQuery = `insert into education (courseName, passingYear, uniBoard ,result, applicantId) 
-            values
-            (?,?,?,?,?)
-        `;
-    if (courses) {
-      for (let i = 0; i < courses.length; i++) {
-        const resultEdu = await db.execute(eduQuery, [
-          courses[i],
-          passingYears[i],
-          unis[i],
-          results[i],
-          applicantId,
-        ]);
-      }
-    }
-
-    //insert into workexp
-
-    const workQuery = `insert into workExperience 
-            (compName, fromDate, toDate, annualPackage , reasonToLeave , refContactNo , refContactName, refContactRelation , applicantId)
-            VALUES
-            (?,?,?,?,?,?,?,?,?)
-            
-            `;
-
-    if (compName) {
-      for (let i = 0; i < compName.length; i++) {
-        await db.execute(workQuery, [
-          compName[i],
-          fromDate[i],
-          toDate[i],
-          annualPkg[i],
-          reasonToLeave[i],
-          refContactNo[i],
-          refContactName[i],
-          refContactRelation[i],
-          applicantId,
-        ]);
-      }
-    }
-    //insert into languages
-    const languageQuery = `insert into languages (applicantId , languageName , canRead, canWrite , canSpeak)
-        values (?,?,?,?,?)`;
-
-    if (languages) {
-      languages.forEach(async (ele) => {
-        let canRead = ele.canRead ? 1 : 0;
-        let canWrite = ele.canWrite ? 1 : 0;
-        let canSpeak = ele.canSpeak ? 1 : 0;
-
-        await db.execute(languageQuery, [
-          applicantId,
-          ele.languages,
-          canRead,
-          canWrite,
-          canSpeak,
-        ]);
-      });
-    }
-
-    //insert technologies
-    const techQuery = `insert into technologies (applicantId , techName , expLevel)
-            values (?,?,?);
-         `;
-    if (technologies) {
-      technologies.forEach(async (e) => {
-        await db.execute(techQuery, [applicantId, e.technologies, e.level]);
-      });
-    }
+    await model.saveDynamicSections(applicantId, req.body);
 
     //insert preference into db
 
@@ -262,69 +144,144 @@ exports.submit = async (req, res) => {
       department,
     ]);
 
-    res.send("hii data is sent to backend");
+    res.redirect(`/applications/${applicantId}`);
   } catch (error) {
     console.log(`error inot submit form ${error}`);
+    res.status(500).send("Failed to save form.");
+  }
+};
+
+exports.listApplicants = async (req, res) => {
+  try {
+    const applicants = await model.getApplicants();
+    res.render("applicantsList", { applicants });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Failed to load applicants list.");
+  }
+};
+
+exports.getApplicantDetails = async (req, res) => {
+  try {
+    const applicantId = Number(req.params.id);
+    if (!Number.isInteger(applicantId)) {
+      return res.status(400).send("Please provide a valid applicant ID.");
+    }
+
+    const data = await model.getApplicantById(applicantId);
+    if (!data.basic) return res.status(404).send("Applicant not found.");
+
+    res.render("applicantDetails", {
+      applicantId,
+      basic: data.basic,
+      preference: data.preference,
+      education: data.education,
+      workExperience: data.workExperience,
+      languages: data.languages,
+      technologies: data.technologies,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Failed to load applicant details.");
   }
 };
 
 exports.getUser = async (req, res) => {
   try {
-    const applicantId = req.params.id;
-
-    if (isNaN(applicantId)) {
-      res.send("enter proper applicant ID");
-    }
-    const [basic_details] = await db.execute(
-      `select * from basic_details where applicantId= ?`,
-      [applicantId],
-    );
-    if (!basic_details.length) {
-      return res.status(404).send(`applicant not found`);
+    const applicantId = Number(req.params.id);
+    if (!Number.isInteger(applicantId)) {
+      return res.status(400).send("Please provide a valid applicant ID.");
     }
 
-    const [educations] = await db.execute(
-      `select * from education where applicantId=?`,
-      [applicantId],
-    );
-    const [workExp] = await db.execute(
-      `select * from workExperience where applicantId =?`,
-      [applicantId],
-    );
+    const data = await model.getApplicantById(applicantId);
+    if (!data.basic) return res.status(404).send("Applicant not found.");
 
-    const [languages] = await db.execute(
-      `select * from languages where applicantId=?`,
-      [applicantId],
-    );
-    const [technologies] = await db.execute(
-      `select * from technologies where applicantId=?`,
-      [applicantId],
-    );
-
-    const [preferences] = await db.execute(
-        `select * from preference where applicantId =?`,
-        [applicantId]
-    );
-
-
-
-    const data = {
+    res.render("updateForm", {
       applicantId,
-      basic_details,
-      educations,
-      workExp,
-      languages,
-      technologies,
-      preferences,
-    };
-    console.log(data);
+      basic: data.basic,
+      preference: data.preference,
+      education: data.education,
+      workExperience: data.workExperience,
+      languages: data.languages,
+      technologies: data.technologies,
+      formError: null,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Failed to load update form.");
+  }
+};
 
-    res.render("updateForm", {data});
+exports.updateApplicant = async (req, res) => {
+  try {
+    const applicantId = Number(req.params.id);
+    if (!Number.isInteger(applicantId)) {
+      return res.status(400).send("Please provide a valid applicant ID.");
+    }
 
+    const payload = req.body;
+    const requiredFields = [
+      "firstName",
+      "lastName",
+      "email",
+      "phoneNo",
+      "designation",
+      "address1",
+      "state",
+      "city",
+      "zip",
+      "dob",
+      "gender",
+      "relationship",
+      "noticePeriod",
+      "expectedCtc",
+      "currentCtc",
+      "location1",
+      "department",
+    ];
 
+    const missing = requiredFields.filter((field) => !payload[field]);
+    const dynamicMissing =
+      !normalizeArray(payload.education).length ||
+      !normalizeArray(payload.workExperience).length ||
+      !normalizeArray(payload.languages).length ||
+      !normalizeArray(payload.technologies).length;
 
-    
-  } catch (err) {
-    console.log(err);
+    if (missing.length || dynamicMissing) {
+      const data = await model.getApplicantById(applicantId);
+      return res.status(400).render("updateForm", {
+        applicantId,
+        basic: { ...data.basic, ...payload },
+        preference: { ...data.preference, ...payload },
+        education: payload.education || data.education,
+        workExperience: payload.workExperience || data.workExperience,
+        languages: payload.languages || data.languages,
+        technologies: payload.technologies || data.technologies,
+        formError: `Please fill required fields: ${missing.join(", ")}${
+          dynamicMissing ? " and all dynamic sections." : ""
+        }`,
+      });
+    }
+
+    await model.updateApplicantById(applicantId, payload);
+    res.redirect(`/applications/${applicantId}`);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Failed to update applicant.");
+  }
+};
+
+exports.deleteApplicant = async (req, res) => {
+  try {
+    const applicantId = Number(req.params.id);
+    if (!Number.isInteger(applicantId)) {
+      return res.status(400).send("Please provide a valid applicant ID.");
+    }
+
+    await model.deleteApplicantById(applicantId);
+    res.redirect("/applications");
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Failed to delete applicant.");
   }
 };

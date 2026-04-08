@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Applicants</title>
+  </head>
+  <body>
+    <h1>Applicants (Read All)</h1>
+    <p><a href="/">Create New Applicant</a></p>
+
+    <table border="1" cellpadding="8">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Designation</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% applicants.forEach((applicant) => { %>
+        <tr>
+          <td><%= applicant.applicantId %></td>
+          <td><%= applicant.firstName %> <%= applicant.lastName %></td>
+          <td><%= applicant.email %></td>
+          <td><%= applicant.phoneNo %></td>
+          <td><%= applicant.designation %></td>
+          <td>
+            <a href="/applications/<%= applicant.applicantId %>">View</a> |
+            <a href="/applications/<%= applicant.applicantId %>/edit">Update</a> |
+            <form
+              method="POST"
+              action="/applications/<%= applicant.applicantId %>/delete"
+              style="display: inline"
+              onsubmit="return confirm('Are you sure you want to delete this applicant?');"
+            >
+              <button type="submit">Delete</button>
+            </form>
+          </td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </body>
+</html>
