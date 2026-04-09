@@ -1,0 +1,23 @@
+// This directory holds Sequelize seeder files.
+// Seeders populate the database with initial/test data.
+//
+// Generate a seeder:
+//   npx sequelize-cli seed:generate --name seed-initial-users
+//
+// Run all seeders:
+//   npm run seed
+//
+// Undo all seeders:
+//   npm run seed:undo
+//
+// Seeder file structure:
+//   module.exports = {
+//     up: async (queryInterface, Sequelize) => {
+//       await queryInterface.bulkInsert('users', [
+//         { name: 'Admin', email: 'admin@example.com', ... }
+//       ]);
+//     },
+//     down: async (queryInterface, Sequelize) => {
+//       await queryInterface.bulkDelete('users', null, {});
+//     },
+//   };

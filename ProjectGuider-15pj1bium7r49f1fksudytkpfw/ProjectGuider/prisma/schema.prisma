@@ -1,0 +1,46 @@
+// prisma/schema.prisma — Prisma Schema Definition
+//
+// This file defines your database schema for Prisma ORM.
+// Prisma supports: PostgreSQL, MySQL, SQLite, SQL Server, MongoDB, CockroachDB
+//
+// Commands:
+//   npx prisma migrate dev --name <migration-name>  — create and apply migration
+//   npx prisma migrate deploy                       — apply pending migrations (production)
+//   npx prisma generate                             — regenerate Prisma Client
+//   npx prisma studio                               — open visual database editor
+//   npx prisma db seed                              — run seed script
+//
+// Change the "provider" below based on your database:
+//   - postgresql (default)
+//   - mysql
+//   - sqlite
+//   - sqlserver
+//   - mongodb
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql" // Change to "mysql", "sqlite", etc.
+  url      = env("DATABASE_URL")
+}
+
+// Example User model — uncomment and customize:
+// model User {
+//   id        Int      @id @default(autoincrement())
+//   name      String   @db.VarChar(100)
+//   email     String   @unique @db.VarChar(255)
+//   password  String   @db.VarChar(255)
+//   role      Role     @default(USER)
+//   isActive  Boolean  @default(true) @map("is_active")
+//   createdAt DateTime @default(now()) @map("created_at")
+//   updatedAt DateTime @updatedAt @map("updated_at")
+//
+//   @@map("users")
+// }
+
+// enum Role {
+//   USER
+//   ADMIN
+// }

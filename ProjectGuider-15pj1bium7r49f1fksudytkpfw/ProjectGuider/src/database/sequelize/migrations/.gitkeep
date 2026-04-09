@@ -1,0 +1,21 @@
+// This directory holds Sequelize migration files.
+// Migrations are timestamped JavaScript files that define schema changes.
+//
+// Generate a migration:
+//   npx sequelize-cli migration:generate --name create-users-table
+//
+// Run migrations:
+//   npm run migrate
+//
+// Undo all migrations:
+//   npm run migrate:undo
+//
+// Migration file structure:
+//   module.exports = {
+//     up: async (queryInterface, Sequelize) => {
+//       await queryInterface.createTable('users', { ... });
+//     },
+//     down: async (queryInterface, Sequelize) => {
+//       await queryInterface.dropTable('users');
+//     },
+//   };

@@ -1,0 +1,12 @@
+// .sequelizerc — Tells Sequelize CLI where to find config, models, migrations, and seeders.
+// This file is ONLY used by the Sequelize CLI (npx sequelize-cli ...).
+// It does NOT affect runtime code.
+
+const path = require('path');
+
+module.exports = {
+  config: path.resolve('src', 'database', 'sequelize', 'config.js'),
+  'models-path': path.resolve('src', 'database', 'sequelize', 'models'),
+  'migrations-path': path.resolve('src', 'database', 'sequelize', 'migrations'),
+  'seeders-path': path.resolve('src', 'database', 'sequelize', 'seeders'),
+};

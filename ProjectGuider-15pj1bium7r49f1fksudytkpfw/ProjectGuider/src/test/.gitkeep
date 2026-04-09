@@ -1,0 +1,26 @@
+/**
+ * test/ — Test Directory
+ *
+ * Place test utilities, setup files, and test helpers here.
+ * Actual test files should be co-located with their source files
+ * or placed in __tests__/ directories within each module.
+ *
+ * Recommended test setup:
+ *   - Jest or Vitest as test runner
+ *   - Supertest for HTTP endpoint testing
+ *   - ts-jest or vitest for TypeScript support
+ *
+ * Example package.json scripts:
+ *   "test": "jest",
+ *   "test:watch": "jest --watch",
+ *   "test:coverage": "jest --coverage"
+ *
+ * Example test file (user.service.test.ts):
+ *   describe('UserService', () => {
+ *     it('should create a user', async () => {
+ *       const user = await userService.create({ name: 'Test', email: 'test@test.com' });
+ *       expect(user).toBeDefined();
+ *       expect(user.email).toBe('test@test.com');
+ *     });
+ *   });
+ */
