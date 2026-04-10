@@ -1,0 +1,2 @@
+creat read delete is done 
+in update new data with same id is updated , but problem in delete the old data. problem facing into fetch api inside one .get api call.

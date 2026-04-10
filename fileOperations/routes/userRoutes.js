@@ -58,78 +58,95 @@ route.get("/allUser", (req, res) => {
 });
 
 route.get("/delete/:id", (req, res) => {
-  try{
+  try {
+    let rowToDelete = req.params.id;
 
-
-  let rowToDelete = req.params.id;
-
-  let newdata ="";
-  let filename="";
-  fs.readFile(databaseFilePath, "utf-8", (err, data) => {
-    if (err) throw err;
-    let rowByrowData = data;
-    console.log(rowByrowData.length);
-    let lineCounter = 0;
-    let filenameFlag = false;
-    for (let i = 0; i < rowByrowData.length; i++) {
-      if (rowByrowData[i] == "\n") {
-        lineCounter++;
-        filenameFlag = false;
-      }
-      if (rowToDelete - 1 == lineCounter) {
-        if (rowByrowData[i] == "/") filenameFlag = true;
-        if (filenameFlag) {
-          filename += rowByrowData[i];
-        }
-        continue;
-      }
-      //  console.log(rowByrowData[i]);
-      newdata += rowByrowData[i];
-    }
-  
-
-
-    fs.writeFile(databaseFilePath, newdata, (err, data) => {
+    let newdata = "";
+    let filename = "";
+    fs.readFile(databaseFilePath, "utf-8", (err, data) => {
       if (err) throw err;
-      fs.unlink(`.${filename}` , (err)=>{
-        if(err) throw err;
-        console.log("file is deleted : " +filename);
+      let rowByrowData = data;
+      console.log(rowByrowData.length);
+      let lineCounter = 0;
+      let filenameFlag = false;
+      for (let i = 0; i < rowByrowData.length; i++) {
+        if (rowByrowData[i] == "\n") {
+          lineCounter++;
+          filenameFlag = false;
+        }
+        if (rowToDelete - 1 == lineCounter) {
+          if (rowByrowData[i] == "/") filenameFlag = true;
+          if (filenameFlag) {
+            filename += rowByrowData[i];
+          }
+          continue;
+        }
+        //  console.log(rowByrowData[i]);
+        newdata += rowByrowData[i];
+      }
+
+      fs.writeFile(databaseFilePath, newdata, (err, data) => {
+        if (err) throw err;
+        fs.unlink(`.${filename}`, (err) => {  //.filename means ./upload/timeStamp.txt
+          if (err) throw err;
+          console.log("file is deleted : " + filename);
+        });
       });
     });
-
-  });
-  res.redirect("/allUser");
-    }catch(err){
-      console.log(err);
-      throw err;
-      
-    }
+    res.redirect("/allUser");
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 });
 
-route.get("/update/:id" , (req, res)=>{
+route.get("/update/:id", async (req, res) => {
   let updateRow = req.params.id;
 
-  try{
-     const data= fs.readFileSync(databaseFilePath , "utf-8");
+  try {
+    const data = fs.readFileSync(databaseFilePath, "utf-8");
 
-     let rowsArr = data.split('\n');
+    let rowsArr = data.split("\n");
 
-     console.log(rowsArr);
-     
-     for(let i=0; i<rowsArr.length;i++){
-      if(i==updateRow){
+    console.log(rowsArr);
+
+    for (let i = 0; i < rowsArr.length; i++) {
+      if (i == updateRow) {
         //logic for update form
         let rowData = rowsArr[i].split(",");
-        console.log("rowData"+rowData);
-        res.render("update", {rowData});
+        console.log("rowData" + rowData[0]);
+        const id = rowData[0];
+        const userName = rowData[1];
+        const userFile = rowData[2];
+        console.log(userFile);
+        const filePath = rowData[3];
+
+        res.render("update", { id, userName, userFile, filePath });
       }
-     }
-     
-  }catch(err){
+    }
+  } catch (err) {
     console.log(err);
-    
+  }
+});
+
+route.post("/update", upload.single("inputFile"), async (req, res) => {
+  try {
+    const data = await fetch(`/delete/${req.body.id}`);
+    console.log(data);
+    console.log(await data.json());
+  } catch (err) {
+    console.log(err);
   }
 
-})
+  let userId = req.body.id;
+  console.log("user ID:" + userId);
 
+  let userData = `${userId},${req.body.userName},${req.file.filename},/uploads/${req.file.filename}\n`;
+  fs.appendFile(databaseFilePath, userData, (err) => {
+    if (err) throw err;
+    console.log("enter data into csv file");
+  });
+
+  res.redirect("/allUser");
+});
 module.exports = route;
