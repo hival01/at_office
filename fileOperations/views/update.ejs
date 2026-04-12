@@ -7,16 +7,18 @@
 </head>
 <body>
     <form action="/update" method="post" enctype="multipart/form-data">
-    <input type="hidden" name="id" value="<%= id%>">
+    <input type="hidden" id="id" name="id" value="<%= id %>">
+    <input type="hidden" name="rowIndex" value="<%= rowIndex %>">
     <label for="userName">Name: </label>
     <input type="text" id="userName" name="userName" value="<%= userName%>">
     
     <br><br>
-    <input type="file" id="inputFile"  name="inputFile" required>
+    <p>Current file: <%= userFile %> (leave empty to keep it)</p>
+    <input type="file" id="inputFile" name="inputFile">
 
     <br><br>
     <button type="submit" id="submitBtn">Submit</button>
-    <button id="allUsers">Get All Users</button>
+    <button type="button" id="allUsers">Get All Users</button>
     </form>
 
 </body>
