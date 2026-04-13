@@ -1,6 +1,6 @@
 import { Request, Response , NextFunction } from "express";
-import {createExpense ,getAllExpense , getExpenseById , deleteExpense } from "../models/expenseModel";
-import { error } from "console";
+import {createExpense ,getAllExpense , getExpenseById , deleteExpense, updateExpense } from "../models/expenseModel";
+
 
 
 export async function createExpenseController(req: Request, res:Response , next:NextFunction){
@@ -91,5 +91,37 @@ export async function deleteExpenseController(req:Request , res:Response , next:
     });
     }catch(err){
         next(err);
+    }
+}
+
+export async function updateExpenseController(req:Request , res:Response, next:NextFunction){
+    try {
+        const {id}= req.params;
+        const{expName, amount, expdate}= req.body;
+        console.log(expName , amount, expdate);
+        
+
+        if(!id){
+            return res.status(400).json({
+                success:false,
+                message:"Expense id is required",
+            });
+        }
+
+        if(!expName || !amount || !expdate){
+            return res.status(400).json({
+                success:false,
+                message:"Please enter all fields: name, amount, date....",
+            })
+        }
+        const result = await updateExpense(Number(id) , expName, Number(amount), expdate);
+
+        res.status(200).json({
+            success:true,
+            message:"expense updated",
+            data:result,
+        });
+    } catch (error) {
+        next(error)
     }
 }

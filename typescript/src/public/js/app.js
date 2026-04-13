@@ -1,12 +1,12 @@
 const expenseForm = document.getElementById("expenseForm");
 const expensisListDiv = document.getElementById("expensisList");
-
-
+const messageDiv = document.getElementById("message");
+const submitBtn = document.getElementById("submitBtn")
 document.addEventListener("DOMContentLoaded" ,()=>{
     loadAllExpenses();
 })
 
-
+let editId= null;
 
 expenseForm.addEventListener("submit" , async(e)=>{
     e.preventDefault();
@@ -15,15 +15,20 @@ expenseForm.addEventListener("submit" , async(e)=>{
     const expName = document.getElementById("expName").value;
     const amount = document.getElementById("amount").value;
     const expDate = document.getElementById("expDate").value;
-     const messageDiv = document.getElementById("message");
+    console.log(expDate+"EXPDATE");
+    
+     
 
      try {
-        const response = await fetch("/api/expense" , {
-            method:"post",
+        const url = editId? `/api/expense/${editId}` :"/api/expense";
+        const method =editId ? "PUT" : "POST";
+
+        const response = await fetch(url , {
+            method: method,
             headers:{
                 'Content-type':"application/json",
             },
-            body: JSON.stringify({expName , amount , expDate}),
+            body: JSON.stringify({expName , amount:Number(amount) , expDate}),
         });
 
 
@@ -32,9 +37,10 @@ expenseForm.addEventListener("submit" , async(e)=>{
        console.log(data);
 
         if(response.ok){
-            messageDiv.textContent ="expense added successfully!"
+            messageDiv.textContent = editId ? "expense updated successfully":"expense added successfully!";
             //load updated expenses
             loadAllExpenses();
+            editId=null;
 
         }else{
             console.log("response is not ok...");
@@ -82,6 +88,7 @@ function showAllExpenses(expenses){
             </td>
             <td>
             <button class ="deleteBtn" dataId = "${data.id}"> Delete</button>
+            <button class="updateBtn" dataId="${data.id}"> Edit </button>
             </td>
           </tr>
           `
@@ -92,6 +99,8 @@ function showAllExpenses(expenses){
 // Event delegation - attach listener to parent (tbody)
 
 expensisListDiv.addEventListener('click', async(e)=>{
+
+    //if click delete button
     if(e.target.classList.contains('deleteBtn')){
         
         const id = e.target.getAttribute('dataId');
@@ -102,7 +111,7 @@ expensisListDiv.addEventListener('click', async(e)=>{
 
         try{
             const response = await fetch(`/api/expense/${id}`,{
-                method:"delete",
+                method:"DELETE",
             })
 
             const data = await response.json();
@@ -118,4 +127,45 @@ expensisListDiv.addEventListener('click', async(e)=>{
             console.log(err);
         }
     }
+
+    //if click on edit button
+    if(e.target.classList.contains('updateBtn')){
+        const id = e.target.getAttribute("dataId");
+        await loadExpenseForEdit(id);
+
+    }
 })
+
+async function loadExpenseForEdit(id){
+    try{
+        const response = await  fetch(`/api/expense/${id}`);
+        const data = await response.json();
+
+        if(response.ok){
+            const expense= data.data[0];
+            console.log(expense);
+
+            document.getElementById("expName").value = expense.expense_name;
+            document.getElementById("amount").value = expense.expense_amount;
+            // document.getElementById("expDate").value = expense.expense_date;
+            const expDateInput = document.getElementById("expDate");
+
+const expDate = expDateInput.value
+  ? expDateInput.value
+  : expDateInput.valueAsDate
+    ? expDateInput.valueAsDate.toISOString().split("T")[0]
+    : "";
+    console.log({ expDate });
+
+            editId=expense.id;
+            submitBtn.textContent = "Update Expense";
+            messageDiv.textContent = "Editing expense...";
+    } else {
+      alert(data.message || "Failed to load expense");
+
+        }
+
+    }catch(err){
+        console.log(err)
+    }
+}

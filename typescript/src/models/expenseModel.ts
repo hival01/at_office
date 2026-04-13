@@ -66,13 +66,38 @@ export async function deleteExpense(id:number){
         const [result] = await connection.execute(query ,[id]);
         connection.release();
 
-        const deleteRow= result as any[];
-        if(deleteRow.length === 0){
+        const deleteRow :any= result;
+        if(deleteRow.affectedRows === 0){
             throw new Error("expense not found");
         }
         return deleteRow;
         
     } catch (error) {
         throw error;
+    }
+}
+
+export async function updateExpense(
+    id:number,
+    name:string,
+    amount:number,
+    date:string,
+){
+    try{
+        const connection = await db.getConnection();
+
+       const  query:string = `update expense set expense_name=? , expense_amount=?, expense_date=? where id=?`;
+
+       const [result] :any[]= await connection.execute(query , [id ,name, amount ,date]);
+
+       connection.release();
+
+       //if no matching data found
+       if(result.affectedRows ===0){
+        throw new AppError("no expense found" , 404);
+       }
+       return result;
+    }catch(err){
+        throw new AppError("err "+ err , 500);
     }
 }
