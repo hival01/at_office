@@ -1,0 +1,14 @@
+create database expense_tracker;
+use expense_tracker;
+
+create table expense (
+id int primary key auto_increment,
+expense_name varchar(255) not null,
+expense_amount decimal (10,2) not null,
+expense_date Date not null,
+created_at timestamp default current_timestamp,
+updated_at timestamp default current_timestamp on update current_timestamp
+);
+
+
+select * from expense;
