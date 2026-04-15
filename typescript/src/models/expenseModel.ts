@@ -1,5 +1,3 @@
-
-import { release } from "node:os";
 import db from "../config/database";
 import {AppError} from "../middleware/errorHandler";
 
@@ -77,6 +75,7 @@ export async function deleteExpense(id:number){
     }
 }
 
+//update expense
 export async function updateExpense(
     id:number,
     name:string,
@@ -88,7 +87,7 @@ export async function updateExpense(
 
        const  query:string = `update expense set expense_name=? , expense_amount=?, expense_date=? where id=?`;
 
-       const [result] :any[]= await connection.execute(query , [id ,name, amount ,date]);
+       const [result] :any[]= await connection.execute(query , [ name, amount ,date,id]);
 
        connection.release();
 
@@ -100,4 +99,21 @@ export async function updateExpense(
     }catch(err){
         throw new AppError("err "+ err , 500);
     }
+}
+
+//search expense
+
+export async function seachExpense(searchData:string) {
+    try {
+        const query = `select * from expense where expense_name like ?`;
+        const connection = await db.getConnection();
+
+        const [result] = await connection.execute(query , [`%${searchData}%`]);
+
+        console.log("result "+JSON.stringify(result));
+        connection.release();
+        return result;
+    } catch (error) {
+        throw new AppError("error in search data in db",400);
+    }   
 }

@@ -1,8 +1,22 @@
 import { Request, Response , NextFunction } from "express";
-import {createExpense ,getAllExpense , getExpenseById , deleteExpense, updateExpense } from "../models/expenseModel";
+import {createExpense ,getAllExpense , getExpenseById , deleteExpense, updateExpense, seachExpense } from "../models/expenseModel";
 
 
-
+export async function searchExpenseController(req:Request , res:Response , next:NextFunction) {
+    try{
+    console.log(); 
+    // const {searchData}= req.body;
+    const result = await seachExpense(String(req.query.searchData));
+    
+    res.status(200).json({
+        success:true,
+        message:"data is searcheddd",
+        data:result,
+    })
+}catch(err){
+    next(err);
+}
+}
 export async function createExpenseController(req: Request, res:Response , next:NextFunction){
 
     try{
@@ -17,6 +31,7 @@ export async function createExpenseController(req: Request, res:Response , next:
 
         //create new Expense
         //await is remaining =============
+        console.log("expdae" + expDate);
 
         const result = await createExpense(expName , amount , expDate);
 
@@ -61,12 +76,8 @@ export async function getExpenseByIdController(req: Request , res:Response , nex
         }
         
         const expense = await getExpenseById(Number(id));
-        
-        res.status(200).json({
-            success:true,
-            message:" expense is  fetched by id",
-            data:expense,
-        })
+        console.log(expense[0]);
+        res.status(200).render("updateForm" , {expense:expense[0]})
         
     }catch(err){
         next(err);
@@ -97,8 +108,8 @@ export async function deleteExpenseController(req:Request , res:Response , next:
 export async function updateExpenseController(req:Request , res:Response, next:NextFunction){
     try {
         const {id}= req.params;
-        const{expName, amount, expdate}= req.body;
-        console.log(expName , amount, expdate);
+        const{expName, amount, expDate}= req.body;
+        console.log(expName , amount, expDate);
         
 
         if(!id){
@@ -108,13 +119,13 @@ export async function updateExpenseController(req:Request , res:Response, next:N
             });
         }
 
-        if(!expName || !amount || !expdate){
+        if(!expName || !amount || !expDate){
             return res.status(400).json({
                 success:false,
                 message:"Please enter all fields: name, amount, date....",
             })
         }
-        const result = await updateExpense(Number(id) , expName, Number(amount), expdate);
+        const result = await updateExpense(Number(id) , expName, Number(amount), expDate);
 
         res.status(200).json({
             success:true,

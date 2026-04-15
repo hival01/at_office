@@ -18,7 +18,9 @@ app.use(express.static(path.join(__dirname, '../src/public')));
 app.set("view engine" , "ejs");
 app.set("views" , path.join(__dirname , "../src/views"))
 
-
+app.get("/" , (req:Request ,res:Response)=>{
+    res.redirect("/api/expense");
+})
 app.use("/api/expense" , router);
 
 // Error handler (must be last)

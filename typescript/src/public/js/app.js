@@ -1,12 +1,31 @@
 const expenseForm = document.getElementById("expenseForm");
 const expensisListDiv = document.getElementById("expensisList");
 const messageDiv = document.getElementById("message");
-const submitBtn = document.getElementById("submitBtn")
+const submitBtn = document.getElementById("submitBtn");
+const searchBtn = document.getElementById("searchBtn");
+let editId= null;
+
+
 document.addEventListener("DOMContentLoaded" ,()=>{
     loadAllExpenses();
 })
 
-let editId= null;
+searchBtn.addEventListener("click" , async ()=>{
+    
+    const searchData= document.getElementById("search").value;
+    console.log("seachdata" +searchData);
+    
+    // window.location.href= `/api/expense/search?searchData=${searchData}`;
+    const response = await fetch(`/api/expense/search?searchData=${searchData}`);
+    const data = await response.json();
+    console.log(data.data);
+
+
+    //show filtered data into table
+    showAllExpenses(data.data);
+
+})
+
 
 expenseForm.addEventListener("submit" , async(e)=>{
     e.preventDefault();
@@ -22,7 +41,6 @@ expenseForm.addEventListener("submit" , async(e)=>{
      try {
         const url = editId? `/api/expense/${editId}` :"/api/expense";
         const method =editId ? "PUT" : "POST";
-
         const response = await fetch(url , {
             method: method,
             headers:{
@@ -89,6 +107,7 @@ function showAllExpenses(expenses){
             <td>
             <button class ="deleteBtn" dataId = "${data.id}"> Delete</button>
             <button class="updateBtn" dataId="${data.id}"> Edit </button>
+            <a href="/api/expense/${data.id}" class="updateBtn">Edit</a>
             </td>
           </tr>
           `
@@ -129,43 +148,46 @@ expensisListDiv.addEventListener('click', async(e)=>{
     }
 
     //if click on edit button
-    if(e.target.classList.contains('updateBtn')){
-        const id = e.target.getAttribute("dataId");
-        await loadExpenseForEdit(id);
+    // if(e.target.classList.contains('updateBtn')){
+    //     try{
+    //     const id = e.target.getAttribute("dataId");
+    //     // await loadExpenseForEdit(id);
+    //     window.location.href=`/api/expense/{id}`;
+    //     // const response = await fetch(`/api/expense/${id}`)
+    //     // const html = await response.text();
+    //     // console.log(html);
+    //     // document.body.innerHTML=html;
+        
+    //     }catch(err){
+    //         console.log(err);
+    //     }
 
-    }
+    // }
+    
 })
 
-async function loadExpenseForEdit(id){
-    try{
-        const response = await  fetch(`/api/expense/${id}`);
-        const data = await response.json();
+// async function loadExpenseForEdit(id){
+//     try{
+//         const response= await fetch(`/api/expense/${id}`);
+//         const data = await response.json();
+//         console.log("data si "+JSON.stringify(data));
+//         if(response.ok){
+//             const expense= data.data[0];
+//             console.log("expense:"+expense);
 
-        if(response.ok){
-            const expense= data.data[0];
-            console.log(expense);
+//             document.getElementById("expName").value = expense.expense_name;
+//             document.getElementById("amount").value = expense.expense_amount;
+//             document.getElementById("expDate").value = expense.expense_date;
 
-            document.getElementById("expName").value = expense.expense_name;
-            document.getElementById("amount").value = expense.expense_amount;
-            // document.getElementById("expDate").value = expense.expense_date;
-            const expDateInput = document.getElementById("expDate");
+//             editId=expense.id;
+//             submitBtn.textContent = "Update Expense";
+//             messageDiv.textContent = "Editing expense...";
+//     } else {
+//       alert(data.message || "Failed to load expense");
 
-const expDate = expDateInput.value
-  ? expDateInput.value
-  : expDateInput.valueAsDate
-    ? expDateInput.valueAsDate.toISOString().split("T")[0]
-    : "";
-    console.log({ expDate });
+//         }
 
-            editId=expense.id;
-            submitBtn.textContent = "Update Expense";
-            messageDiv.textContent = "Editing expense...";
-    } else {
-      alert(data.message || "Failed to load expense");
-
-        }
-
-    }catch(err){
-        console.log(err)
-    }
-}
+//     }catch(err){
+//         console.log(err)
+//     }
+// }
