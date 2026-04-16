@@ -1,11 +1,11 @@
 import express , {Request , Response , NextFunction, response} from "express";
-import path from 'path';
+import path from "path";
 import dotenv from "dotenv";
 import router from "./routes/expenseRoutes";
 import {errorHandler} from "./middleware/errorHandler";
 dotenv.config();
 
-const PORT = process.env.port ||3010;
+const PORT:number = Number(process.env.port ??3010);
 
 const app = express();
 
@@ -38,4 +38,4 @@ app.use(errorHandler);
 
 app.listen(PORT , ()=>{
     console.log(`server is running on http://localhost:${PORT}`);
-})
+});

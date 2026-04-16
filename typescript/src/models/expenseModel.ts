@@ -1,6 +1,15 @@
+import { RowDataPacket ,ResultSetHeader } from "mysql2";
 import db from "../config/database";
 import {AppError} from "../middleware/errorHandler";
 
+interface ExpenseRow extends RowDataPacket {
+    id:number;
+    expense_name:string;
+    expense_amount:number;
+    expense_date:string;
+    created_at:string;
+    updated_at:string;
+}
 //create expense 
 export async function createExpense (name:string , amount:number , date:string){
     try{
@@ -8,7 +17,7 @@ export async function createExpense (name:string , amount:number , date:string){
 
     const query:string  = `insert into expense(expense_name , expense_amount , expense_date) values (?,?,?);`
 
-    const [result] :any[] = await connection.execute(query , [name,amount,date]);
+    const [result] = await connection.execute<ResultSetHeader>(query , [name,amount,date]);
     connection.release();
 
     return result;
@@ -24,7 +33,7 @@ export async function getAllExpense(){
         const connection = await db.getConnection();
 
         const query :string = `select * from expense order by created_at desc`;
-        const [result] :any[] = await connection.execute(query);
+        const [result]  = await connection.execute<ExpenseRow[]>(query);
         connection.release();
         return result;
 
@@ -38,7 +47,7 @@ export async function getExpenseById(id:number){
         const connection = await db.getConnection();
 
         const query:string = `select * from expense where id= ?`;
-        const [result]:any[] = await connection.execute(query , [id]);
+        const [result] = await connection.execute<ExpenseRow[]>(query , [id]);
         connection.release();
 
         //what if no exp is there with this id?
@@ -61,7 +70,7 @@ export async function deleteExpense(id:number){
         const connection = await db.getConnection();
 
         const query:string= `delete from expense where id=?`;
-        const [result] = await connection.execute(query ,[id]);
+        const [result] = await connection.execute<ResultSetHeader>(query ,[id]);
         connection.release();
 
         const deleteRow :any= result;
@@ -87,7 +96,7 @@ export async function updateExpense(
 
        const  query:string = `update expense set expense_name=? , expense_amount=?, expense_date=? where id=?`;
 
-       const [result] :any[]= await connection.execute(query , [ name, amount ,date,id]);
+       const [result] :any[]= await connection.execute<ResultSetHeader>(query , [ name, amount ,date,id]);
 
        connection.release();
 
@@ -108,7 +117,7 @@ export async function seachExpense(searchData:string) {
         const query = `select * from expense where expense_name like ?`;
         const connection = await db.getConnection();
 
-        const [result] = await connection.execute(query , [`%${searchData}%`]);
+        const [result] = await connection.execute<ExpenseRow[]>(query , [`%${searchData}%`]);
 
         console.log("result "+JSON.stringify(result));
         connection.release();

@@ -6,7 +6,7 @@ export async function searchExpenseController(req:Request , res:Response , next:
     try{
     console.log(); 
     // const {searchData}= req.body;
-    const result = await seachExpense(String(req.query.searchData));
+    const result = await seachExpense(String(req.query.searchData ?? ""));
     
     res.status(200).json({
         success:true,
