@@ -1,0 +1,128 @@
+Authentication system:
+
+
+User Story:
+
+-as a registered user, i want to log in so that i can access the system
+-as a user, i want to register so that i can register my self as valid user.
+-as a user , i want forget password functionality so that i can get reset token
+-as a user , i want to get reset Token so that i can reset my password.
+-as a admin , i want dashboard so that can see all the user's credentials
+-as a admin, i want delete button so that i can change any user's credentials
+-as a admin , i want remove button so that i can remove any user from the system
+-as a logged-in user, i want logout button so that i can protect my private information in shared device.
+
+
+we have to make one authentication system. in which we have many sub modules.
+
+sub modules are:
+1) login page
+2) register page
+3) forgot password page
+4) get forgot password token (link) page -which wil work as a gamil box 
+5) reset Password page
+6) captcha generation module
+7) admin module
+
+roles for system are:
+1) user
+2) admin
+
+description of what things each module have.
+
+1) login page:
+    -input text for user email
+    -user password
+    -forgot password button
+    -captch fill section
+    -remember me check box
+    -submit button
+    - if first time user? then register page link
+
+2) Register page:
+    -input text for user email
+    -set user password
+    -captch fill section
+    -submit button
+
+3) Forgot Password page
+    -input text for email
+    -send link button
+
+4) get forgot password token
+    -info div tell that open link for reset password
+    -get the token(link) for forget password
+
+5)reset Password page
+    -input text for enter password
+    -conform password
+    -set Password button
+
+6)captcha generation module
+    -backend logic for how we can generate captcha.
+
+7) Admin module
+    -can see the all users list with its email and password
+    -have change button for each user for change thier credentials.
+
+flow of the system:
+
+i) authentication flow:
+    1) register page:
+        -user will enter email and password
+        -if email is already presenet then give error that email is already registered
+        -check all the requirement for strong password
+            -password should be minimum of 8 character
+            -minimum one Captical letter
+            -minimum one special charactor
+            -minimum one small letter
+            -minimum one number
+        -if password not follow all the requirement then give error that list down which requirement is not satisfy,
+        -before submit data into database again look up the database that this email id user is present or not. if present then give error that email is already registerd try with another email.
+        -if all requirement is fullfilled then submit data to database.
+        -redirect user to dashboard.
+
+    2)login page:
+        -user will enter email and password.
+        -captcha will generated - then user will fill the captch . if captch is wrong then show error invalid captch.try again. and reload the new captch.
+        -if capche will fill under 3 second then show error - try again , and load new captcha (it will prevent the captcha filling using ai agent)
+        -if username is not found in database or password is not match with orignal password then give error that username or password is wrong.
+        -if user have checked the remember me check box , then store credential in Persistent Cookie (Fixed expiry). so when user come again he loged in automatically.
+        -if user don't remember password. then user will click on forgot password. will redirect to forgot password page.
+        -more then 5 wrong email or password attempt will block the 
+    
+    3)forgot password page:
+        -in this page user will input enter the email address. on which the reset password link will be sent.
+        -if email is not registerd then , dont send the the link on that email. but don't show any error to user.
+        -if email is registerd , then sent reset password link on that email.
+        -on successfully submission of email. so pop up that says reset password link is sent on your email.
+        -generate the reset Token in backend by encrypting email + expiry time + random salt .
+    
+    4)get forgot password token (work as a Email Box)
+        -this page will work as a Email box.
+        -user can only access the page when there is valid reset Token is given in query String.
+        -if valid reset Token is given in query parameter. then show the link on page saying that click on link to reset password.
+    
+    5)reset Password page:
+        -is 2 field and 1 button is show.
+        -user will input new password.
+        -again user will input confirm password.
+        -password shoud not match the current password store in database. if it is same then show error new password should not be same as old password.
+        -both password and confirm password shoud identical. if not then show error that new password and confirm password shoud be identical.
+        -new password should follow strong password requirements which are :
+            -password should be minimum of 8 character
+            -minimum one Captical letter
+            -minimum one special charactor
+            -minimum one small letter
+            -minimum one number
+        -if all requirement are fullfilled then override the old password in database with new password.
+        -then redirect user to login page. and follow step 2.
+
+ii) admin flow:
+    -if user has logged-in as admin then they have below permissions
+        -admin can see all users email and passwords
+        -admin can add ,chnage or remove the user from system
+    
+
+
+
