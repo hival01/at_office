@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>login</title>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Register</h1>
+      <p>enter mail and pass</p>
+
+      <form action="/register" method="post">
+        <label for="name">User name:</label>
+        <input type="text" id="name" name="name" required />
+        <br /><br />
+
+        <label for="email">Email</label>
+        <input type="email" name="email" id="email" required />
+
+        <br /><br />
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password" required />
+        <br/>
+        <span id="email-error"></span>
+
+        <br/>
+        <span id="error-message"></span>
+        <br />
+
+        <button type="submit" id="register">Register</button>
+      </form>
+
+      <p><a href="/login">Login</a></p>
+    </div>
+
+    <script>
+
+      
+
+      let userExist = false;
+      document.getElementById("email").addEventListener("blur", async (e) => {
+        console.log(" in email");
+        const respose = await fetch("/check-email", {
+          method: "post",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: e.target.value }),
+        });
+
+        const data = await respose.json();
+        console.log("data in email blur", data);
+        console.log(data.existes);
+        if (data &&  data.existes) {
+          userExist = true;
+          document.getElementById("email-error").innerText =
+            "email already exist";
+        } else {
+          userExist = false;
+        }
+      });
+
+      //register the user
+      document
+        .getElementById("register")
+        .addEventListener("click", async (e) => {
+          e.preventDefault();
+          //get all data
+          //vaidate all the details first
+          const userName = document.getElementById("name").value.trim();
+          const email = document.getElementById("email").value.trim();
+          const password = document.getElementById("password").value.trim();
+
+          //add logic to verif the name eamil and password 
+
+
+
+          if (userExist) {
+            document.getElementById("email-error").innerText =
+              "email already exist try with new email";
+          } else {
+            //if user not exist then register user
+
+            if (!userName || !email || !password) {
+              document.getElementById("error-message").innerText =
+                "please fill all the information correctly";
+            }else{
+                //all detaild is complete the store data in db;
+                const response = await fetch("/register" , {
+                    method:"post",
+                    headers: { "Content-Type": "application/json" },
+                    body:JSON.stringify({userName:userName , email:email, password:password})
+                })
+
+                const data = await response.json();
+                console.log("data" ,data);
+                console.log(data.message);
+                if(data && data.message){
+                    document.getElementById("error-message").innerText= data.message;
+                    if(data.success){
+
+                        setTimeout(()=>{
+                            window.location.href="/login";
+                        },2000);    
+                    }
+
+                }
+
+            }
+          }
+        });
+    </script>
+  </body>
+</html>
+
