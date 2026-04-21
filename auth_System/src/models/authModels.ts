@@ -28,7 +28,7 @@ export async function registerUser(userName:string, email:string , password:stri
     }
 }
 
-export async function authenticateUser(email:string , password:string){
+export async function getUser(email:string){
   try{
     const connection = await db.getConnection();
         const  query = `select * from authentication where user_email = ?`;
@@ -48,6 +48,20 @@ export async function EnterJWT(token:string , id:number) {
         const  query = `update authentication set jwt_token =? where user_id = ?`;
         
         const [result] = await connection.execute(query, [token, id]);
+        connection.release();
+
+        return result;
+    }catch(err){
+      console.log(err);
+    }
+}
+
+export async function updatePassword(id:number, hash:string) {
+     try{
+      const connection = await db.getConnection();
+        const  query = `update authentication set user_password=? where user_id=?`;
+        
+        const [result] = await connection.execute(query, [hash, id]);
         connection.release();
 
         return result;

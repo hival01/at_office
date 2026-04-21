@@ -3,10 +3,15 @@ import dotenv from "dotenv";
 import path from "path";
 dotenv.config();
 import db from "./config/db";
+import cookieParser from "cookie-parser";
 const app = express();
 import authRoutes from "./routes/authRoutes"
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
+
+// Use cookie-parser with a secret for signed cookies
+app.use(cookieParser(process.env.COOKIE_SECRET));
+
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
