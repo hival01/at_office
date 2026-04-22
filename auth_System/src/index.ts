@@ -4,10 +4,16 @@ import path from "path";
 dotenv.config();
 import db from "./config/db";
 import cookieParser from "cookie-parser";
+import passport  from "passport";
+import './config/passport-config'; // Load the strategy
 const app = express();
 import authRoutes from "./routes/authRoutes"
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
+
+
+app.use(passport.initialize());
+
 
 // Use cookie-parser with a secret for signed cookies
 app.use(cookieParser(process.env.COOKIE_SECRET));

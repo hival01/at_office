@@ -18,7 +18,10 @@ export function showLoginPage(req:Request, res:Response , next:NextFunction):voi
     res.status(200).render("login");
 }
 export function showDashboard(req:Request, res:Response , next:NextFunction):void{
-    res.status(200).render("dashboard");
+    const user = req.user; 
+    
+    res.render("dashboard", { user });
+    
 }
 
 export function showRegisterPage (req:Request, res:Response,next:NextFunction):void{
@@ -31,21 +34,21 @@ export function showForgotPassPage (req:Request, res:Response,next:NextFunction)
 
 export function showResetPassword (req:Request, res:Response, next:NextFunction):void{
     const token= req.params.id;
-    console.log(token);
+    
     res.status(200).render("reset-password", {token:token})
 }
 
 export async function checkEmailController(req:Request, res:Response, next:NextFunction): Promise<any>{
     try{
     const email = req.body.email;
-    console.log("email in controller", email);
 
+        console.log(email);
     const userExist = await userExistOrNot(email);
-    if(userExist){
-        res.json({
-            existes:userExist,
+    console.log(userExist);
+        return res.json({
+            existes:userExist, //true or false
         })
-    }
+    
 
 }catch(err){
     next(err)
@@ -65,45 +68,49 @@ async function userExistOrNot(email:string):Promise<boolean>{
 
 
 
-export async function registerUserController(req:Request , res:Response , next:NextFunction){
-    try{
-        //store user data 
-        if (!req.body.userName || !req.body.email || !req.body.password) {
-             res.status(401).json({
-                message:"please enter all the data"
-            })
-        }
-        //check again if user email is present in db or not 
-        const userExist = await userExistOrNot(req.body.email);
-        console.log(userExist);
-        if(userExist){
-             res.json({
-                message:"user is exist with this email",
-                success:false,
-            })
-        }else{
-    
-            const saltRound =Math.random() * 10;
-            const password = req.body.password;
-
-
-            const hashPassword = await bcrypt.hash(password, saltRound);
-            console.log("hash" , hashPassword);
-            await registerUser(req.body.userName , req.body.email , hashPassword);
-
-             res.json({
-                message:"Registed!",
-                success:true,
-            });
-
-            
-        }
-
-
-
-    }catch(err){
-        next(err);
+export async function registerUserController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const { userName, email, password } = req.body;
+    //store user data
+    if (!userName || !email || !password) {
+      return res.status(401).json({
+        message: "please enter all the data",
+      });
     }
+
+    const strongRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!strongRegex.test(password)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Password is too weak!" });
+    }
+    //check again if user email is present in db or not
+    const userExist = await userExistOrNot(email);
+
+    if (userExist) {
+      return res.json({
+        message: "user is exist with this email",
+        success: false,
+      });
+    } else {
+      const saltRound = 10;
+      const hashPassword = await bcrypt.hash(password, saltRound);
+
+      await registerUser(userName, email, hashPassword);
+
+      return res.json({
+        message: "Registed!",
+        success: true,
+      });
+    }
+  } catch (err) {
+    next(err);
+  }
 }
 
 export async function loginUserController(req:Request, res:Response , next:NextFunction){
@@ -118,7 +125,7 @@ export async function loginUserController(req:Request, res:Response , next:NextF
     //retrive captcha from siged cookie
     const storedCaptcah = req.signedCookies.captcha;
 
-    console.log( "stored capthca", storedCaptcah);
+   
 
     if(!storedCaptcah || storedCaptcah !== captchaInput){
         return res.status(400).json({
@@ -131,7 +138,7 @@ export async function loginUserController(req:Request, res:Response , next:NextF
 
     const result :any= await getUser(email);
 
-
+    
     if(result.length){
         const hashStored =result[0].user_password;
         const isMatch = await bcrypt.compare(password , hashStored);
@@ -145,12 +152,12 @@ export async function loginUserController(req:Request, res:Response , next:NextF
             //all info is correct
 
             //generate jwt
-            const user = {id:result[0].user_id , email:result[0].email};
+            const user = { id:result[0].user_id ,email:result[0].user_email};
 
             const token = jwt.sign(
                 user,
                 String(process.env.SECRET_KEY),
-                {expiresIn:'1d'},
+                {expiresIn:'1m'},
             );
 
             await EnterJWT(token , result[0].user_id);
@@ -201,14 +208,14 @@ export async function forgotPasswordController(req:Request, res:Response, next:N
         }
 
         //
-        console.log(user);
+        
         // Generate a 2-minute reset token
         const resetToken = jwt.sign(
             {id: user.user_id},
             String(process.env.SECRET_KEY),
             {expiresIn:"2m"},
         )
-        console.log(resetToken);
+       
 
         return res.status(200).json({
             success:true,
@@ -226,8 +233,12 @@ export async function resetPasswordController(req:Request, res:Response, next:Ne
         const {token , password} = req.body;
         
         const decoded :any= jwt.verify(token, String(process.env.SECRET_KEY));
-        const hash= await bcrypt.hash(password , Math.random()*10);
+        const hash= await bcrypt.hash(password , 10);
 
+        //check decoded has id or not
+          if (!decoded || !decoded.id) {
+            throw new Error("Invalid payload");
+        }
         await updatePassword(decoded.id, hash);
         return res.json({ success: true, message: "Password updated!" });
 
@@ -237,4 +248,12 @@ export async function resetPasswordController(req:Request, res:Response, next:Ne
             message:"invalid token",
         })
     }
+}
+
+
+export async function getAdminPage(req:Request, res:Response, next:NextFunction){
+    //fetch all the data and send to frontend
+
+
+
 }

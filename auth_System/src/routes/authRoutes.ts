@@ -12,6 +12,7 @@ import {
   getCaptchaController,
   forgotPasswordController,
   resetPasswordController,
+  getAdminPage,
 } from "../controllers/authController";
 
 import { redirectIfLoggedIn, verifyUser } from "../middlerwares/auth";
@@ -26,6 +27,7 @@ router.get("/register", showRegisterPage);
 router.get("/forgot-password", showForgotPassPage);
 router.get("/reset-password/:id", showResetPassword);
 router.get("/dashboard", verifyUser, showDashboard);
+router.get("/admin",verifyUser, getAdminPage)
 
 router.post("/check-email", checkEmailController);
 router.post("/register", registerUserController);
