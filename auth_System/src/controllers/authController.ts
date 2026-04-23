@@ -213,7 +213,7 @@ export async function forgotPasswordController(req:Request, res:Response, next:N
         const resetToken = jwt.sign(
             {id: user.user_id},
             String(process.env.SECRET_KEY),
-            {expiresIn:"2m"},
+            {expiresIn:"10m"},
         )
        
 
