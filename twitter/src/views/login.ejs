@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/auth.css">
+
+    <title>login</title>
+  </head>
+
+  <body>
+    <!-- <div class="container">
+      <h1>Login</h1>
+      <p>enter mail and pass</p>
+
+      <form action="/login" method="post">
+        <label for="email">Enter mail</label>
+        <input type="email" name="email" id="email" required />
+
+        <label for="password">Enter Password</label>
+        <input type="password" name="password" id="password" required />
+        <br />
+        <a href="/forgot-password">Forgot password?</a>
+        <br />
+        <br />
+        <span id="error-message"></span>
+
+        <br />
+
+        <br />
+        <div id="captcha-container">
+          <img
+            src="/get-captcha"
+            alt="captcha image"
+            id="captcha-img"
+            onclick="refreshCaptcha()"
+            style="cursor: pointer"
+          />
+          <p>click image to refresh the captcha</p>
+        </div>
+        <input
+          type="text"
+          id="captchaInput"
+          placeholder="enter captcha"
+          required
+        />
+
+        <button type="submit" id="login">Login</button>
+      </form>
+
+      <p>dont have account? <a href="/register">register here</a></p>
+    </div> -->
+    <div class="auth-wrapper">
+
+  <!-- LEFT SIDE (LOGO) -->
+  <div class="left">
+    <img src="/images/logo.svg" alt="X Logo">
+  </div>
+
+  <!-- RIGHT SIDE (FORM) -->
+  <div class="right">
+
+    <div class="auth-box">
+      <img src="/images/logo.svg" class="small-logo" />
+
+      <h1>Sign in to X</h1>
+
+      <form>
+
+        <input type="email" id="email" placeholder="Email" required />
+        <input type="password" id="password" placeholder="Password" required />
+
+        <span id="error-message"></span>
+
+        <button id="login">Sign in</button>
+
+      </form>
+
+      <a href="/forgot-password">Forgot password?</a>
+
+      <p class="divider">or</p>
+
+      <a href="/register" class="create-btn">Create account</a>
+
+    </div>
+
+  </div>
+
+</div>
+
+    <script>
+      document.getElementById("login").addEventListener("click", async (e) => {
+        e.preventDefault();
+        document.getElementById("error-message").style.color = "red";
+        console.log("hiii");
+
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value.trim();
+        const captchaInput = document
+          .getElementById("captchaInput")
+          .value.trim();
+
+        if (!email || !password) {
+          document.getElementById("error-message").innerText =
+            "incorrect email or password";
+          return;
+        }
+        //check the login
+        const response = await fetch("/login", {
+          method: "post",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: email,
+            password: password,
+            captchaInput: captchaInput,
+          }),
+        });
+
+        const data = await response.json();
+        console.log(data);
+
+        if (data.success) {
+          console.log("Success:", data.message);
+          // Redirect to dashboard or home page
+
+          window.location.href = "/dashboard";
+        } else {
+          // Display the specific error message from your controller (e.g., "invalid password")
+          document.getElementById("error-message").innerText = data.message;
+          refreshCaptcha();
+        }
+      });
+
+      //FUNCTION TO CALL DIFFRENT CAPTCHA EACH TIME WHEN CALLED
+      function refreshCaptcha() {
+        document.getElementById("captcha-img").src =
+          "/get-captcha?t=" + Math.random();
+      }
+    </script>
+  </body>
+</html>
+
+

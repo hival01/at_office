@@ -1,0 +1,104 @@
+    <!DOCTYPE html>
+<html>
+<head>
+    <title><%= user.username %></title>
+    <link rel="stylesheet" href="/css/profile.css">
+</head>
+<body>
+
+<div class="profile-container">
+
+    <!-- COVER -->
+    <div class="cover">
+        <img src="<%= user.cover_page_url || '/images/default-cover.jpg' %>" />
+
+    </div>
+
+    <!-- PROFILE INFO -->
+    <div class="profile-header">
+        <div class="profile-top">
+        <img class="avatar" src="<%= user.profile_pic_url || '/images/default-avatar.png' %>" />
+
+        <% if (currentUser && currentUser.username.toLowerCase() === user.username.toLowerCase()) { %>
+            <button class="edit-btn" onclick="openModal()">Edit Profile</button>
+        <% } %>
+         </div>
+
+        <h2><%= user.username %></h2>
+
+        <p class="bio">
+            <%= user.bio || "No bio available" %>
+        </p>
+
+        <p class="join-date">
+            Joined <%= new Date(user.created_at).toDateString() %>
+        </p>
+
+        <div class="stats">
+            <span><b><%= stats.following %></b> Following</span>
+            <span><b><%= stats.followers %></b> Followers</span>
+            <span><b><%= stats.tweets %></b> Tweets</span>
+        </div>
+    </div>
+
+    <!-- EDIT MODAL -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+
+            <span class="close" onclick="closeModal()">&times;</span>
+
+            <h2>Edit Profile</h2>
+
+            <form action="/update-profile" method="POST" enctype="multipart/form-data">
+
+                <label>Profile Picture</label>
+                <input type="file" name="profile_pic" />
+
+                <label>Cover Photo</label>
+                <input type="file" name="cover_pic" />
+
+                <label>Bio</label>
+                <textarea name="bio" maxlength="160"><%= user.bio || "" %></textarea>
+
+                <button type="submit" class="save-btn">Save</button>
+            </form>
+
+        </div>
+    </div>
+
+    <!-- TWEETS -->
+    <div class="tweets">
+
+        <% if (tweets.length === 0) { %>
+            <p class="no-tweets">No tweets yet</p>
+        <% } %>
+
+        <% tweets.forEach(tweet => { %>
+            <div class="tweet">
+                <img src="<%= tweet.profile_pic_url || '/images/default-avatar.png' %>" />
+
+                <div class="tweet-content">
+                    <b><%= tweet.username %></b>
+                    <p><%= tweet.content %></p>
+                    <small><%= new Date(tweet.created_at).toLocaleString() %></small>
+                </div>
+            </div>
+        <% }) %>
+
+    </div>
+
+</div>
+
+<script>
+function openModal() {
+    document.getElementById("editModal").style.display = "flex";
+}
+
+function closeModal() {
+    document.getElementById("editModal").style.display = "none";
+}
+</script>
+
+</body>
+</html>
+

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Code / X</title>
+    <!-- Fixed Tailwind Script -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://googleapis.com');
+        
+        body { 
+            background-color: #000; 
+            color: #fff; 
+            font-family: 'Inter', sans-serif;
+        }
+
+        .twitter-input {
+            background-color: transparent;
+            border: 1px solid #333;
+            border-radius: 4px;
+            padding: 16px 12px;
+            width: 100%;
+            outline: none;
+            font-size: 1.5rem;
+            letter-spacing: 0.75rem;
+            text-align: center;
+            transition: border-color 0.2s;
+        }
+
+        .twitter-input:focus { 
+            border-color: #1d9bf0; 
+        }
+
+        .btn-white { 
+            background-color: #eff3f4; 
+            color: #0f1419; 
+            font-weight: 700; 
+            transition: background-color 0.2s; 
+        }
+
+        .btn-white:hover { 
+            background-color: #d7dbdc; 
+        }
+
+        /* Hide arrows/spinners on number inputs */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+    <main class="w-full max-w-[400px] p-8 bg-black rounded-2xl border border-[#333]">
+        
+        <!-- X Logo -->
+        <div class="flex justify-center mb-8">
+            <svg viewBox="0 0 24 24" class="h-9 w-9 fill-white">
+                <g><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></g>
+            </svg>
+        </div>
+
+        <header class="mb-8">
+            <h1 class="text-3xl font-extrabold mb-3">We sent you a code</h1>
+            <p class="text-[#71767b] text-sm leading-relaxed">
+                <!-- <span class="text-white font-medium"><%= email %></span> -->
+                Enter it below to verify your email <br>
+            </p>
+        </header>
+
+        <form action="/verify-otp" method="POST" class="space-y-6">
+            <!-- Context for the backend -->
+            <input type="hidden" name="email" value="<%= email %>">
+            
+            <div class="relative">
+                <input 
+                    type="text" 
+                    name="otp" 
+                    placeholder="000000" 
+                    maxlength="6" 
+                    pattern="\d{6}" 
+                    inputmode="numeric"
+                    required 
+                    autofocus
+                    class="twitter-input"
+                >
+            </div>
+
+            <button type="submit" class="w-full btn-white py-3.5 rounded-full text-base">
+                Next
+            </button>
+        </form>
+
+        <footer class="mt-10 text-sm">
+            <p class="text-[#71767b]">Didn't receive a code?</p>
+            <form action="/forgot-password" method="POST" class="inline">
+                <input type="hidden" name="email" value="<%= email %>">
+                <button type="submit" class="text-[#1d9bf0] font-medium hover:underline bg-transparent border-none p-0 mt-1 cursor-pointer transition">
+                    Resend code
+                </button>
+            </form>
+        </footer>
+
+    </main>
+
+</body>
+</html>

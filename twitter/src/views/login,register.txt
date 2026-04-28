@@ -1,0 +1,254 @@
+now lets change the login page theme and ui styling , we have to make it as original x.com page . i have logo.svg of x, give me the whole css file to make it ditto x.com.
+current login and sign up page  is 
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>login</title>
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>Login</h1>
+      <p>enter mail and pass</p>
+
+      <form action="/login" method="post">
+        <label for="email">Enter mail</label>
+        <input type="email" name="email" id="email" required />
+
+        <label for="password">Enter Password</label>
+        <input type="password" name="password" id="password" required />
+        <br />
+        <a href="/forgot-password">Forgot password?</a>
+        <br />
+        <br />
+        <span id="error-message"></span>
+
+        <br />
+
+        <br />
+        <div id="captcha-container">
+          <img
+            src="/get-captcha"
+            alt="captcha image"
+            id="captcha-img"
+            onclick="refreshCaptcha()"
+            style="cursor: pointer"
+          />
+          <p>click image to refresh the captcha</p>
+        </div>
+        <input
+          type="text"
+          id="captchaInput"
+          placeholder="enter captcha"
+          required
+        />
+
+        <button type="submit" id="login">Login</button>
+      </form>
+
+      <p>dont have account? <a href="/register">register here</a></p>
+    </div>
+
+    <script>
+      document.getElementById("login").addEventListener("click", async (e) => {
+        e.preventDefault();
+        document.getElementById("error-message").style.color = "red";
+
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value.trim();
+        const captchaInput = document
+          .getElementById("captchaInput")
+          .value.trim();
+
+        if (!email || !password) {
+          document.getElementById("error-message").innerText =
+            "incorrect email or password";
+          return;
+        }
+        //check the login
+        const response = await fetch("/login", {
+          method: "post",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: email,
+            password: password,
+            captchaInput: captchaInput,
+          }),
+        });
+
+        const data = await response.json();
+        console.log(data);
+
+        if (data.success) {
+          console.log("Success:", data.message);
+          // Redirect to dashboard or home page
+
+          window.location.href = "/dashboard";
+        } else {
+          // Display the specific error message from your controller (e.g., "invalid password")
+          document.getElementById("error-message").innerText = data.message;
+          refreshCaptcha();
+        }
+      });
+
+      //FUNCTION TO CALL DIFFRENT CAPTCHA EACH TIME WHEN CALLED
+      function refreshCaptcha() {
+        document.getElementById("captcha-img").src =
+          "/get-captcha?t=" + Math.random();
+      }
+    </script>
+  </body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>login</title>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Register</h1>
+      <p>enter mail and pass</p>
+
+      <form action="/register" method="post">
+        <label for="name">User name:</label>
+        <input type="text" id="name" name="name" required />
+        <br /><br />
+
+        <label for="email">Email</label>
+        <input type="email" name="email" id="email" required />
+
+        <br /><br />
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password" required />
+        <br />
+        <span id="email-error"></span>
+
+        <br>
+        <input type="date" name="dob" id="dob" required>
+
+        <br />
+        <span id="error-message"></span>
+        <br />
+
+        <button type="submit" id="register">Register</button>
+      </form>
+
+      <p><a href="/login">Login</a></p>
+    </div>
+
+    <script>
+      function isPasswordStrong(password) {
+        const strongRegex =
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        return strongRegex.test(password);
+      }
+
+      let userExist = false;
+
+      document.getElementById("email").addEventListener("blur", async (e) => {
+        const EmailErrorDisplay = document.getElementById("email-error");
+        EmailErrorDisplay.style.color = "orange";
+        try{
+        console.log(" in email");
+        console.log( e.target.value );
+
+          const respose = await fetch("/check-email", {
+            method: "post",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: e.target.value }),
+          });
+          console.log(userExist);
+          
+          const data = await respose.json();
+        console.log("data in email blur", data);
+        console.log(data.existes);
+        if (data && data.existes) {
+          userExist = true;
+          EmailErrorDisplay.innerText =
+          "email already exist";
+        } else {
+          userExist = false;
+        }
+      }catch(err){
+        console.error("Fetch Error:", error);
+         EmailErrorDisplay.innerText = "Error checking email. Please try again.";
+         EmailErrorDisplay.style.color = "orange";
+      }
+      });
+      
+      //register the user
+      document
+        .getElementById("register")
+        .addEventListener("click", async (e) => {
+          e.preventDefault();
+          //get all data
+          //vaidate all the details first
+          const userName = document.getElementById("name").value.trim();
+          const email = document.getElementById("email").value.trim();
+          const password = document.getElementById("password").value.trim();
+          const dob = document.getElementById("dob").value;
+          const errorDisplay = document.getElementById("error-message");
+          const EmailErrorDisplay = document.getElementById("email-error");
+          EmailErrorDisplay.style.color = "orange";
+          console.log(email ,"in reg btn");
+
+          // Clear previous errors
+          errorDisplay.innerText = "";
+          errorDisplay.style.color = "red";
+           EmailErrorDisplay.innerText ="";
+
+          //if user not exist then register user
+
+          if (!userName || !email || !password || !dob) {
+            document.getElementById("error-message").innerText =
+              "please fill all the information correctly";
+            return;
+          }
+
+          // 2. Strong Password Validation
+          if (!isPasswordStrong(password)) {
+            errorDisplay.innerHTML = `
+                    Password must have: <br>
+                    - At least 8 characters <br>
+                    - One uppercase & one lowercase letter <br>
+                    - One number & one special character (@$!%*?&)
+                `;
+            return;
+          }
+
+          if (userExist) {
+            EmailErrorDisplay.innerText =
+              "email already exist ";
+            return;
+          }
+
+          //all detaild is complete the store data in db;
+          const response = await fetch("/register", {
+            method: "post",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              userName: userName,
+              email: email,
+              password: password,
+              dob:dob,
+            }),
+          });
+
+          const data = await response.json();
+          console.log("data", data);
+          console.log(data.message);
+          if (data && data.success) {
+            alert("registerd Sucessfully")
+                window.location.href = "/login";
+            }
+        });
+    </script>
+  </body>
+</html>
