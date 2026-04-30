@@ -14,6 +14,7 @@ declare module "express-session" {
       id: number;
       username: string;
       email?: string;
+      profile_pic_url: string;
     };
   }
 }

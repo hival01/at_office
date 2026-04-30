@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home</title>
+    <link rel="stylesheet" href="/css/layout.css">
+<link rel="stylesheet" href="/css/home.css">
+</head>
+<body>
+
+<div class="layout">
+
+    <!-- LEFT SIDEBAR -->
+    <div class="sidebar">
+        <h2 class="logo">X</h2>
+
+        <a href="/home">Home</a>
+        
+         <a href="/<%= currentUser ? currentUser.username : '#' %>">Profile</a>
+
+        <form action="/logout" method="POST">
+            <button class="logout-btn">Logout</button>
+        </form>
+    </div>
+
+    <!-- MAIN FEED -->
+    <div class="feed">
+
+        <!-- HEADER -->
+        <div class="feed-header">
+            <h2>Home</h2>
+        </div>
+
+        <!-- TWEET BOX -->
+        <div class="tweet-box">
+
+            <img src="<%= currentUser ? currentUser.profile_pic_url : '/images/default-avatar.png' %>" />
+
+            <form action="/tweet" method="POST" enctype="multipart/form-data">
+                <textarea name="content" placeholder="What is happening?" required></textarea>
+
+                <input type="file" name="image" accept="image/*" />
+
+                <button type="submit">Post</button>
+            </form>
+
+        </div>
+
+        <!-- TWEETS LIST -->
+        <div class="tweets">
+
+            <% if (tweets.length === 0) { %>
+                <p class="no-tweets">No tweets yet</p>
+            <% } %>
+
+            <% tweets.forEach(tweet => { %>
+                <div class="tweet">
+
+                    <img class="avatar" src="<%= tweet.profile_pic_url %>" />
+
+                    <div class="tweet-content">
+                        <a href="/<%= tweet.username %>">
+                            <b><%= tweet.username %></b>
+                        </a>
+
+                        <p><%= tweet.content %></p>
+
+                        <% if (tweet.image_url) { %>
+                            <div class="tweet-image-container">
+                                <img class="tweet-img" src="<%= tweet.image_url %>" />
+                            </div>
+                        <% } %> 
+                        
+                        
+                        <small>
+                            <%= new Date(tweet.created_at).toLocaleString() %>
+                        </small>
+                    </div>
+
+                </div>
+            <% }) %>
+
+        </div>
+
+    </div>
+
+    <!-- RIGHT SIDEBAR -->
+    <div class="rightbar">
+        <h3>Trends</h3>
+        <p>Coming soon...</p>
+    </div>
+
+</div>
+
+</body>
+</html>

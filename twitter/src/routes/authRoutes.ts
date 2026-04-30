@@ -8,7 +8,7 @@ import {
   checkEmailController,
   registerUserController,
   loginUserController,
-  showDashboard,
+  
   getCaptchaController,
   forgotPasswordController,
   resetPasswordController,
@@ -19,6 +19,8 @@ import {
   getProfilePage,
   updateProfileImages,
   updateProfile,
+  createTweet,
+getHomePage,
 
 
 } from "../controllers/authController";
@@ -34,13 +36,17 @@ router.get("/get-captcha", getCaptchaController);
 router.get("/register", showRegisterPage);
 router.get("/forgot-password", showForgotPassPage);
 router.get("/reset-password/:id",ensureOtpVerified, showResetPassword);
-router.get("/dashboard", verifyUser, showDashboard);
+
 router.get("/admin",verifyUser, getAdminPage)
 
 router.get("/verify-otp", verifyOtpPage)
 // In your routes file
 router.get('/mock-inbox', emailBoxController);
+
+
+router.get("/home", verifyUser, getHomePage);
 router.get("/:username", verifyUser, getProfilePage);
+
 
 router.post("/check-email", checkEmailController);
 router.post("/register", registerUserController);
@@ -49,6 +55,12 @@ router.post("/forgot-password" , forgotPasswordController);
 router.post("/reset-password", resetPasswordController);
 router.post('/verify-otp', verifyOTPController);
 
+router.post(
+    "/tweet",
+    verifyUser,
+    upload.single("image"),
+    createTweet
+);
 
 router.post(
   "/update-profile",

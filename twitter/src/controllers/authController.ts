@@ -21,21 +21,20 @@ import {
   getUserStats,
   updateUserImages,
   getUserById, updateUserProfile 
+
 } from "../models/authModels";
 import {
     getTweetsByUser,
+    addTweet,
+    getAllTweets,
+
 
 
 }from "../models/tweetModel"
 export function showLoginPage(req:Request, res:Response , next:NextFunction):void{
     res.status(200).render("login");
 }
-export function showDashboard(req:Request, res:Response , next:NextFunction):void{
-    // const user = req.users; 
-    
-    res.render("dashboard");
-    
-}
+
 
 export function showRegisterPage (req:Request, res:Response,next:NextFunction):void{
     res.status(200).render("register");
@@ -173,12 +172,12 @@ export async function loginUserController(req:Request, res:Response , next:NextF
             //all info is correct
 
             //generate jwt
-            const user = { id:result[0].id ,email:result[0].email,username:result[0].username};
+            const user = { id:result[0].id ,email:result[0].email,username:result[0].username ,  profile_pic_url: result[0].profile_pic_url,};
 
             const token = jwt.sign(
                 user,
                 String(process.env.SECRET_KEY),
-                {expiresIn:'1h'},
+                {expiresIn:'1d'},
             );
 
             await EnterJWT(token , result[0].id);
@@ -191,9 +190,10 @@ export async function loginUserController(req:Request, res:Response , next:NextF
 
             console.log(user , "user");
             req.session.user = {
-            id: user.id,
-            username: user.username,
-            email: user.email
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                 profile_pic_url: user.profile_pic_url,
             };
 
             console.log("session:" , req.session);
@@ -215,7 +215,7 @@ export async function loginUserController(req:Request, res:Response , next:NextF
 export async function getCaptchaController(req:Request, res:Response , next:NextFunction){
     const captcha = svgCaptcha.create({
         size:4,
-        noise:0,
+        noise:2,
         color:true,
     });
 
@@ -507,10 +507,56 @@ export const updateProfile = async (req: Request, res: Response) => {
         // 4️⃣ Update DB
         await updateUserProfile(userId, bio, profilePath, coverPath);
 
+
+            if (req.session.user) {
+              if (profilePath) {
+                req.session.user.profile_pic_url = profilePath;
+                console.log("chnage session");
+              }
+            }
         res.redirect(`/${req.session.user?.username}`);
 
     } catch (err) {
         console.log("updateProfile error:", err);
         res.status(500).send("Update failed");
+    }
+};
+
+export const createTweet = async (req:Request, res:Response) => {
+    try {
+        const userId = Number(req.session.user?.id);
+        const { content } = req.body;
+        console.log("SESSION USER:", req.session.user);
+
+        let imagePath = null;
+
+        if (req.file) {
+            imagePath = `/uploads/tweets/${req.file.filename}`;
+        }
+
+        await addTweet(userId, content, imagePath);
+
+        res.redirect("/home");
+
+        
+    } catch (err) {
+        console.log(err);
+        res.send("Error posting tweet");
+    }
+};
+
+export const getHomePage = async (req: Request, res: Response) => {
+    try {
+        console.log("in get home");
+        const tweets = await getAllTweets();
+        console.log("in get home2");
+
+        res.render("home", {
+            tweets,
+            currentUser: req.session.user || null
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send("Error loading home page");
     }
 };

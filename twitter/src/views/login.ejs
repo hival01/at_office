@@ -9,55 +9,14 @@
   </head>
 
   <body>
-    <!-- <div class="container">
-      <h1>Login</h1>
-      <p>enter mail and pass</p>
-
-      <form action="/login" method="post">
-        <label for="email">Enter mail</label>
-        <input type="email" name="email" id="email" required />
-
-        <label for="password">Enter Password</label>
-        <input type="password" name="password" id="password" required />
-        <br />
-        <a href="/forgot-password">Forgot password?</a>
-        <br />
-        <br />
-        <span id="error-message"></span>
-
-        <br />
-
-        <br />
-        <div id="captcha-container">
-          <img
-            src="/get-captcha"
-            alt="captcha image"
-            id="captcha-img"
-            onclick="refreshCaptcha()"
-            style="cursor: pointer"
-          />
-          <p>click image to refresh the captcha</p>
-        </div>
-        <input
-          type="text"
-          id="captchaInput"
-          placeholder="enter captcha"
-          required
-        />
-
-        <button type="submit" id="login">Login</button>
-      </form>
-
-      <p>dont have account? <a href="/register">register here</a></p>
-    </div> -->
     <div class="auth-wrapper">
 
-  <!-- LEFT SIDE (LOGO) -->
+  <!-- LEFT SIDE -->
   <div class="left">
     <img src="/images/logo.svg" alt="X Logo">
   </div>
 
-  <!-- RIGHT SIDE (FORM) -->
+  <!-- RIGHT SIDE -->
   <div class="right">
 
     <div class="auth-box">
@@ -71,6 +30,24 @@
         <input type="password" id="password" placeholder="Password" required />
 
         <span id="error-message"></span>
+
+        <!-- CAPTCHA -->
+        <div class="captcha-box">
+          <img
+            src="/get-captcha"
+            alt="captcha"
+            id="captcha-img"
+            onclick="refreshCaptcha()"
+          />
+          <p>Click image to refresh</p>
+        </div>
+
+        <input
+          type="text"
+          id="captchaInput"
+          placeholder="Enter captcha"
+          required
+        />
 
         <button id="login">Sign in</button>
 
@@ -125,7 +102,7 @@
           console.log("Success:", data.message);
           // Redirect to dashboard or home page
 
-          window.location.href = "/dashboard";
+          window.location.href = "/home";
         } else {
           // Display the specific error message from your controller (e.g., "invalid password")
           document.getElementById("error-message").innerText = data.message;

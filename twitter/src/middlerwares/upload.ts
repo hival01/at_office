@@ -11,6 +11,8 @@ const storage = multer.diskStorage({
             folder = "profile";
         } else if (file.fieldname === "cover_pic") {
             folder = "cover";
+        }else if (file.fieldname === "image") {   
+            folder = "tweets";
         }
 
         // ✅ Correct absolute path inside your project

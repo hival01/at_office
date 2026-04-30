@@ -11,6 +11,7 @@ export async function getTweetsByUser(userId: number) {
             SELECT 
                 t.tweet_id,
                 t.content,
+                t.image_url,
                 t.created_at,
                 u.username,
                 u.profile_pic_url
@@ -28,4 +29,30 @@ export async function getTweetsByUser(userId: number) {
         console.log("getTweetsByUser error:", err);
         throw err;
     }
+}
+
+export async function addTweet(userId: number, content: string, imageUrl: string | null) {
+    const connection = await db.getConnection();
+
+    await connection.execute(
+        `INSERT INTO tweets (user_id, content, image_url) VALUES (?, ?, ?)`,
+        [userId, content, imageUrl]
+    );
+
+    connection.release();
+}
+
+
+export async function getAllTweets() {
+    const connection = await db.getConnection();
+    console.log("in database to get tweet");
+    const [rows]: any = await connection.execute(`
+        SELECT tweets.*, users.username, users.profile_pic_url
+        FROM tweets
+        JOIN users ON tweets.user_id = users.id
+        ORDER BY tweets.created_at DESC
+    `);
+
+    connection.release();
+    return rows;
 }

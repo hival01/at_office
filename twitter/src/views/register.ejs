@@ -7,36 +7,47 @@
     <title>login</title>
   </head>
   <body>
-    <div class="container">
-      <h1>Register</h1>
-      <p>enter mail and pass</p>
+    <div class="auth-wrapper">
 
-      <form action="/register" method="post">
-        <label for="name">User name:</label>
-        <input type="text" id="name" name="name" required />
-        <br /><br />
+  <!-- LEFT -->
+  <div class="left">
+    <img src="/images/logo.svg" alt="X Logo">
+  </div>
 
-        <label for="email">Email</label>
-        <input type="email" name="email" id="email" required />
+  <!-- RIGHT -->
+  <div class="right">
 
-        <br /><br />
-        <label for="password">Password</label>
-        <input type="password" name="password" id="password" required />
-        <br />
+    <div class="auth-box">
+      <img src="/images/logo.svg" class="small-logo" />
+
+      <h1>Create your account</h1>
+
+      <form>
+
+        <input type="text" id="name" placeholder="Username" required />
+
+        <input type="email" id="email" placeholder="Email" required />
         <span id="email-error"></span>
 
-        <br>
-        <input type="date" name="dob" id="dob" required>
+        <input type="password" id="password" placeholder="Password" required />
 
-        <br />
+        <input type="date" id="dob" required />
+
         <span id="error-message"></span>
-        <br />
 
-        <button type="submit" id="register">Register</button>
+        <button id="register">Sign up</button>
+
       </form>
 
-      <p><a href="/login">Login</a></p>
+      <p class="divider">or</p>
+
+      <a href="/login" class="create-btn">Sign in instead</a>
+
     </div>
+
+  </div>
+
+</div>
 
     <script>
       function isPasswordStrong(password) {

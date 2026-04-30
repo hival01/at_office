@@ -32,7 +32,7 @@ app.use(session({
     saveUninitialized: false,   // Create session even if nothing is stored
     cookie: { 
         secure: false,         // Set to true if using HTTPS
-        maxAge: 600000         // Session expires in 10 minutes
+        maxAge: 24 * 60 * 60 * 1000         // Session expires in 10 minutes
     }
 }));
 
