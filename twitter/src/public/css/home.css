@@ -239,3 +239,60 @@ body {
     background: #2f3336;
     border-radius: 10px;
 }
+
+/* ACTION BAR */
+.tweet-actions {
+    display: flex;
+    justify-content: space-between;
+    max-width: 300px;
+    margin-top: 10px;
+}
+
+/* BASE ACTION */
+.action {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #71767b;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    transition: 0.2s;
+}
+
+/* HOVER EFFECTS */
+.action:hover {
+    background-color: #1a1a1a;
+}
+
+
+
+
+/* COMMENT HOVER */
+.comment:hover {
+    color: #1d9bf0;
+}
+
+/* RETWEET HOVER */
+.retweet:hover {
+    color: #00ba7c;
+}
+
+.like-icon {
+    fill: transparent;
+    stroke: #71767b;
+    stroke-width: 2;
+    transition: 0.2s;
+}
+
+/* liked */
+.like.liked .like-icon {
+    fill: #f91880;
+    stroke: #f91880;
+}
+
+/* hover */
+.like:hover .like-icon {
+    stroke: #ea92bb;
+}

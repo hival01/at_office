@@ -39,9 +39,16 @@
             <div class="profile-top">
                 <img class="avatar large" src="<%= user.profile_pic_url || '/images/default-avatar.png' %>" />
 
-                <% if (currentUser && currentUser.username.toLowerCase() === user.username.toLowerCase()) { %>
+                <% if (currentUser && currentUser.username.toLowerCase()===user.username.toLowerCase()) { %>
                     <button class="edit-btn" onclick="openModal()">Edit Profile</button>
-                <% } %>
+                    <% } %>
+                
+                        <% if (currentUser && currentUser.id !==user.id) { %>
+                            <button id="followBtn" class="follow-btn <%= isFollowing ? 'following' : '' %>"
+                                 onclick="handleFollow(<%= user.id %>)">
+                                <%= isFollowing ? 'Following' : 'Follow' %>
+                            </button>
+                            <% } %>
             </div>
 
             <h2><%= user.username %></h2>
@@ -64,7 +71,7 @@
 
 
 
-        <!-- EDIT MODAL //i have added this but css if not given to this part . give complete css here  -->
+        <!-- EDIT MODAL -->
     <div id="editModal" class="modal">
         <div class="modal-content">
 
@@ -138,7 +145,33 @@ function openModal() {
 function closeModal() {
     document.getElementById("editModal").style.display = "none";
 }
+
+async function handleFollow(userId) {
+    const btn = document.getElementById("followBtn");
+
+    const res = await fetch("/follow", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ followingId: userId })
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+        if (data.following) {
+            btn.innerText = "Following";
+            btn.classList.add("following");
+        } else {
+            btn.innerText = "Follow";
+            btn.classList.remove("following");
+        }
+    }
+}
+
 </script>
 
 </body>
 </html>
+

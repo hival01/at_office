@@ -12,7 +12,8 @@ import {
   getCaptchaController,
   forgotPasswordController,
   resetPasswordController,
-  getAdminPage,
+  
+
   verifyOtpPage,
   verifyOTPController,
   emailBoxController,
@@ -21,7 +22,9 @@ import {
   updateProfile,
   createTweet,
 getHomePage,
-
+logoutUser,
+toggleLike,
+toggleFollow,
 
 } from "../controllers/authController";
 import { upload } from "../middlerwares/upload";
@@ -37,10 +40,10 @@ router.get("/register", showRegisterPage);
 router.get("/forgot-password", showForgotPassPage);
 router.get("/reset-password/:id",ensureOtpVerified, showResetPassword);
 
-router.get("/admin",verifyUser, getAdminPage)
+
 
 router.get("/verify-otp", verifyOtpPage)
-// In your routes file
+
 router.get('/mock-inbox', emailBoxController);
 
 
@@ -73,6 +76,8 @@ router.post(
   updateProfile
 );
 
-
+router.post("/logout" , logoutUser);
+router.post("/like", toggleLike);
+router.post("/follow", toggleFollow);
 
 export default router;

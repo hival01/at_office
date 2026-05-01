@@ -193,33 +193,6 @@ export async function getUserById(userId: number) {
     }
 }
 
-
-/**
- * Get user tweet/follower stats
- */
-export async function getUserStats(userId: number) {
-    try {
-        const connection = await db.getConnection();
-
-        // Count main tweets (parent_id IS NULL)
-        const [tweetRows]: any = await connection.execute(
-            `SELECT COUNT(*) as count FROM tweets WHERE user_id = ? AND parent_id IS NULL`,
-            [userId]
-        );
-
-        connection.release();
-
-        return {
-            tweets: tweetRows[0]?.count || 0,
-            followers: 0, // implement later
-            following: 0
-        };
-    } catch (err) {
-        console.log("getUserStats error:", err);
-        throw err;
-    }
-}
-
 export async function updateUserImages(
     userId: number,
     profilePic: string | null,

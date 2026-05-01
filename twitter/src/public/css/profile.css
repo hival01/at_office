@@ -292,3 +292,30 @@ body {
 .save-btn:hover {
     background: #1a8cd8;
 }
+
+
+/* FOLLOW BUTTON */
+.follow-btn {
+    padding: 8px 18px;
+    border-radius: 999px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    background: #eff3f4;
+    color: black;
+    transition: 0.2s;
+}
+
+/* FOLLOWING STATE */
+.follow-btn.following {
+    background: transparent;
+    border: 1px solid #536471;
+    color: white;
+}
+
+/* HOVER LIKE X */
+.follow-btn.following:hover {
+    background: rgba(244,33,46,0.1);
+    color: red;
+    border-color: red;
+}

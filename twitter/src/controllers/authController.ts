@@ -18,7 +18,6 @@ import {
   saveOTP,
   getLatestOTP,markOTPAsUsed,
   getUserByUsername,
-  getUserStats,
   updateUserImages,
   getUserById, updateUserProfile 
 
@@ -27,7 +26,9 @@ import {
     getTweetsByUser,
     addTweet,
     getAllTweets,
-
+    addLike, removeLike, isLiked, getLikeCount,
+    followUser, unfollowUser, 
+    isFollowing, getFollowersCount, getFollowingCount
 
 
 }from "../models/tweetModel"
@@ -214,8 +215,8 @@ export async function loginUserController(req:Request, res:Response , next:NextF
 
 export async function getCaptchaController(req:Request, res:Response , next:NextFunction){
     const captcha = svgCaptcha.create({
-        size:4,
-        noise:2,
+        size:1,
+        noise:0,
         color:true,
     });
 
@@ -326,13 +327,6 @@ export async function resetPasswordController(req: Request, res: Response, next:
 }
 
 
-export async function getAdminPage(req:Request, res:Response, next:NextFunction){
-    //fetch all the data and send to frontend
-
-
-
-}
-
 
 export async function verifyOTPController(req:Request, res:Response, next:NextFunction) {
     try {
@@ -394,14 +388,27 @@ export const getProfilePage = async (req: Request, res: Response) => {
             return res.status(404).render("error", { message: "User not found" });
         }
 
-        const stats = await getUserStats(user.id);
+        
         const tweets = await getTweetsByUser(user.id);
+
+
+        const currentUserId = req.session.user?.id ?? 0;
+        const isUserFollowing = await isFollowing(currentUserId, user.id);
+
+        const followers = await getFollowersCount(user.id);
+        const following = await getFollowingCount(user.id);
 
         res.render("profile", {
             user,
-            stats,
+            
             tweets,
-            currentUser: req.session.user || null
+            currentUser: req.session.user || null,
+            isFollowing:isUserFollowing,
+            stats: {
+                followers,
+                following,
+                tweets: tweets.length
+            }
         });
 
     } catch (error) {
@@ -414,8 +421,8 @@ export const getProfilePage = async (req: Request, res: Response) => {
 
 export const updateProfileImages = async (req: Request, res: Response) => {
     try {
-        console.log("in controller");
-         console.log(process.cwd());
+        
+        
         const userId = req.session.user?.id;
 
         if (!userId) {
@@ -547,8 +554,9 @@ export const createTweet = async (req:Request, res:Response) => {
 
 export const getHomePage = async (req: Request, res: Response) => {
     try {
+        const userId : any= req.session.user?.id ;
         console.log("in get home");
-        const tweets = await getAllTweets();
+        const tweets = await getAllTweets(userId);
         console.log("in get home2");
 
         res.render("home", {
@@ -560,3 +568,103 @@ export const getHomePage = async (req: Request, res: Response) => {
         res.status(500).send("Error loading home page");
     }
 };
+
+export const logoutUser = (req:Request , res:Response)=>{
+    req.session.destroy((err) =>{
+        if(err){
+            console.log("logiut error", err);
+            return res.redirect("/home")
+        }
+
+        //clear cookie
+        res.clearCookie("connect.sid");
+        res.clearCookie("token");
+
+        res.redirect("/login");
+    });
+}
+
+
+
+
+export const toggleLike = async (req: Request, res: Response) => {
+  try {
+    const userId = req.session.user?.id;
+    const { tweetId } = req.body;
+
+    // 🔒 Not logged in
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized"
+      });
+    }
+
+    if (!tweetId) {
+      return res.status(400).json({
+        success: false,
+        message: "Tweet ID required"
+      });
+    }
+
+    // 🔍 Check if already liked
+    const alreadyLiked = await isLiked(userId, tweetId);
+
+    let liked;
+
+    if (alreadyLiked) {
+      // ❌ Unlike
+      await removeLike(userId, tweetId);
+      liked = false;
+    } else {
+      // ❤️ Like
+      await addLike(userId, tweetId);
+      liked = true;
+    }
+
+    // 🔢 Get updated like count
+    const likeCount = await getLikeCount(tweetId);
+
+    return res.json({
+      success: true,
+      liked,
+      likeCount
+    });
+
+  } catch (err) {
+    console.error("Error in toggleLike:", err);
+
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong"
+    });
+  }
+};
+
+export async function toggleFollow(req: any, res: any) {
+    try {
+        const followerId = req.session.user?.id;
+        const { followingId } = req.body;
+
+        if (!followerId) {
+            return res.json({ success: false });
+        }
+
+        const alreadyFollowing = await isFollowing(followerId, followingId);
+
+        if (alreadyFollowing) {
+            await unfollowUser(followerId, followingId);
+        } else {
+            await followUser(followerId, followingId);
+        }
+
+        res.json({
+            success: true,
+            following: !alreadyFollowing
+        });
+
+    } catch (err) {
+        console.log(err);
+        res.json({ success: false });
+    }
+}
