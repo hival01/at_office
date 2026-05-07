@@ -16,6 +16,18 @@ export const verifyUser = (req:Request , res:Response, next:NextFunction)=>{
 
         const decoded = jwt.verify(token , String(process.env.SECRET_KEY));
         (req as any).user = decoded;
+
+
+        // ✅ REBUILD SESSION if missing
+        if (!req.session.user) {
+            req.session.user = {
+                id : decoded.id,
+                username: decoded.username,
+                email: decoded.email,
+                profile_pic_url: decoded.profile_pic_url
+            };
+        }
+
         next(); 
     }catch(err){
         //iftoken is invalid or expire . remove it and redirect to login
@@ -25,20 +37,6 @@ export const verifyUser = (req:Request , res:Response, next:NextFunction)=>{
     }
 }
 
-//authtenticate with passport-jwt
-
-// export const verifyUser = (req: Request, res: Response, next: NextFunction) => {
-//     passport.authenticate('jwt', { session: false }, (err: any, user: any) => {
-//         if (err || !user) {
-//             res.clearCookie("token");
-//             return res.redirect("/login");
-//         }
-//         req.user = user; // Attach database user to the request
-//         next();
-//     })(req, res, next);
-// };
-
-
 // Middleware to prevent logged-in users from seeing /login or /
 
 export const redirectIfLoggedIn =  (req:Request , res:Response, next:NextFunction)=>{
@@ -47,7 +45,7 @@ export const redirectIfLoggedIn =  (req:Request , res:Response, next:NextFunctio
     if(token){
         try{
             jwt.verify(token, String(process.env.SECRET_KEY));
-            return res.redirect("/dashboard");
+            return res.redirect("/home");
         }catch(err){
             // if token is not valid then redirect to login page
             next();

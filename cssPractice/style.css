@@ -1,0 +1,182 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    font-family:Arial, sans-serif;
+    background:#f5f2eb;
+    color:#111;
+}
+
+.container{
+    width: 90%;
+    max-width: 1200px;
+    margin: auto;
+}
+
+a{
+    text-decoration:none;
+    color:black;
+}
+
+
+/* navbar  */
+
+.nav-wrapper{
+    display: flex;
+    justify-content: space-between;
+    align-items:center;
+    padding: 20px 0px;
+    
+}
+
+.nav-links{
+    display:flex;
+    gap:30px;
+    align-items: center;
+}
+
+.nav-btn button{
+    padding:10px 20px;
+    border:none;
+    background:black;
+    color:white;
+    border-radius: 6px;
+}
+
+
+
+/* hero section */
+
+
+.hero-wrapper{
+    margin-top: 90px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    gap:50px;
+}
+
+.hero-left{
+    flex:1;
+}
+
+.hero-left h1{
+font-family: Inter;
+font-weight: 600;
+font-style: Semi Bold;
+font-size: 84px;
+margin-top: 40px;
+}
+
+.hero-para{
+font-family: Inter;
+font-weight: 500;
+font-size: 20px;
+width:450px;
+margin-bottom:30px;
+margin-top: 25px;
+}
+
+.hero-form{
+    display: flex;
+    width: 481px;
+    border-bottom: 6px solid black;
+    border-radius: 3px; 
+    border-right: 6px solid black;
+    margin-bottom: 100px;
+}
+
+.hero-form input{
+    padding:15px;
+    width:316px;
+    border:2px solid black;
+    border-top-left-radius: 3px ;
+   
+}
+
+.hero-form button{
+    padding:15px 20px;
+    background: #FFBB38;
+    width: 164px;
+    border:2px solid black;
+    
+}
+
+
+/* hero right section  */
+.hero-right{
+    width:450px;
+    height:500px;
+  
+
+
+    position:relative;
+}
+.circle{
+    width: 203px;
+    height: 203px;
+    border-radius: 50%;
+    background-color: #FC7F3A;
+    /* justify-content:center;
+    align-items:center; */
+     position:absolute;
+}
+.orange{
+    background: #FC7F3A;
+    top:0;
+    right: 0;
+    
+}
+
+.orange .textbox{
+    width: 90px;
+    font-family: Ribeye;
+    font-weight: 400;
+    font-size: 35px;
+    top: 90px;
+    left: 60px;
+    position: absolute;
+}
+.yellow{
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+
+    background: #FFBB38;
+    top: 150px;
+    right:100px;
+}
+.yellow .textbox{
+     width: 90px;
+    font-family: Ribeye;
+    font-weight: 400;
+    font-size: 35px;
+    top: 70px;
+    left: 60px;
+    position: absolute;
+}
+
+.green{
+    background: #389B48;
+    width: 213px;
+    height: 206px;
+    bottom:0;
+    left:0;
+    color:white;
+    position: absolute;
+
+}
+
+.green .textbox{
+     width: 90px;
+    font-family: Ribeye;
+    font-weight: 400;
+    font-size: 35px;
+    top: 20px;
+    left: 20px;
+    
+    position: relative;
+}

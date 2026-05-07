@@ -5,15 +5,10 @@ dotenv.config();
 import db from "./config/db";
 import cookieParser from "cookie-parser";
 import session from 'express-session';
-// import passport  from "passport";
-import './config/passport-config'; // Load the strategy
 const app = express();
 import authRoutes from "./routes/authRoutes"
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
-
-
-// app.use(passport.initialize());
 
 
 // Use cookie-parser with a secret for signed cookies
@@ -32,7 +27,7 @@ app.use(session({
     saveUninitialized: false,   // Create session even if nothing is stored
     cookie: { 
         secure: false,         // Set to true if using HTTPS
-        maxAge: 24 * 60 * 60 * 1000         // Session expires in 10 minutes
+        maxAge: 24 * 60 * 60 * 1000         // Session expires in 1day
     }
 }));
 
@@ -62,3 +57,5 @@ try {
 } catch (err) {
   console.log(err);
 }
+
+

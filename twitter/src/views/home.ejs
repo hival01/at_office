@@ -80,8 +80,9 @@
                     <div class="tweet-actions">
                     
                         <!-- COMMENT -->
-                        <span class="action comment">
-                            💬 <span>0</span>
+                        <span class="action comment" onclick="toggleComments(<%= tweet.tweet_id %>)">
+                            <i class="fa-regular fa-comment">💬</i>
+                            <span><%= tweet.comment_count || 0 %></span>
                         </span>
                     
                         <!-- RETWEET -->
@@ -91,7 +92,7 @@
                     
                         <!-- LIKE -->
                          <span 
-                            class="action like <%= tweet.is_liked == "1" ? 'liked' : '' %>" 
+                            class="action like <%= tweet.is_liked == 1 ? 'liked' : '' %>" 
                             onclick="handleLike(this, <%= tweet.tweet_id %>)"
                         >
                             <svg class="like-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
@@ -104,6 +105,17 @@
 
                         </span>
                     
+                    </div>
+
+                    <div id="comments-<%= tweet.tweet_id %>" class="comments-section" style="display:none;">
+                        
+                        <div class="comment-list"></div>
+
+                        <form onsubmit="postComment(event, <%= tweet.tweet_id %>)">
+                            <input type="text" name="content" placeholder="Post your reply..." required />
+                            <button type="submit">Reply</button>
+                        </form>
+
                     </div>
 
 
@@ -147,11 +159,7 @@ async function handleLike(element, tweetId) {
             countEl.innerText = data.likeCount;
 
             // toggle UI
-            // if (data.liked) {
-            //     element.classList.add("liked");
-            // } else {
-            //     element.classList.remove("liked");
-            // }
+            
             element.classList.toggle("liked", data.liked);
         }
 
@@ -159,6 +167,121 @@ async function handleLike(element, tweetId) {
         console.error("Like error:", err);
     }
 }
+
+
+//logic for comment
+async function toggleComments(tweetId) {
+    const container = document.getElementById(`comments-${tweetId}`);
+
+    if (container.style.display === "none") {
+        container.style.display = "block";
+
+        const res = await fetch(`/comments/${tweetId}`);
+        const data = await res.json();
+
+        const list = container.querySelector(".comment-list");
+        list.innerHTML = renderComments(data.comments);
+
+    } else {
+        container.style.display = "none";
+    }
+}
+
+function renderComments(comments, level = 0) {
+    let html = "";
+
+    comments.forEach(c => {
+        html += `
+            <div class="comment" style="margin-left: ${level * 20}px">
+                <img src="${c.profile_pic_url}" />
+                <div class="comment-body">
+                    <b>${c.username}</b>
+                    <p>${c.content}</p>
+
+                    <span class="reply-btn" onclick="showReplyBox(${c.comment_id})">
+                        Reply
+                    </span>
+
+                    <div id="reply-box-${c.comment_id}" class="reply-box" style="display:none;">
+                        <input 
+                            type="text" 
+                            placeholder="Reply..." 
+                            onkeypress="handleReply(event, ${c.comment_id}, ${c.tweet_id})"
+                        />
+                    </div>
+                </div>
+            </div>
+        `;
+
+        if (c.replies && c.replies.length > 0) {
+            html += renderComments(c.replies, level + 1);
+        }
+    });
+
+    return html;
+}
+
+
+
+async function postComment(e, tweetId) {
+    e.preventDefault();
+
+    const input = e.target.querySelector("input");
+    const content = input.value;
+
+    const res = await fetch("/comment", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            tweetId,
+            content
+        })
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+        input.value = "";
+        toggleComments(tweetId); // refresh
+        toggleComments(tweetId);
+    }
+}
+
+
+function showReplyBox(commentId) {
+    const box = document.getElementById(`reply-box-${commentId}`);
+    box.style.display = box.style.display === "none" ? "block" : "none";
+}
+
+
+
+async function handleReply(e, parentCommentId, tweetId) {
+    if (e.key === "Enter") {
+        const content = e.target.value;
+
+        const res = await fetch("/comment", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                tweetId,
+                content,
+                parentCommentId
+            })
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+            toggleComments(tweetId);
+            toggleComments(tweetId);
+        }
+    }
+}
+
 </script>
 
 

@@ -28,10 +28,14 @@ import {
     getAllTweets,
     addLike, removeLike, isLiked, getLikeCount,
     followUser, unfollowUser, 
-    isFollowing, getFollowersCount, getFollowingCount
+    isFollowing, getFollowersCount, getFollowingCount,
+    addComment ,getCommentCount, getCommentsByTweet,
 
 
-}from "../models/tweetModel"
+}from "../models/tweetModel";
+
+
+
 export function showLoginPage(req:Request, res:Response , next:NextFunction):void{
     res.status(200).render("login");
 }
@@ -239,15 +243,8 @@ export async function forgotPasswordController(req:Request, res:Response, next:N
         if(!user){
             return res.status(404).json({success:false, message:"user not found"});
         }
-
-        //
         
-        // Generate a 2-minute reset token
-        // const resetToken = jwt.sign(
-        //     {id: user.user_id},
-        //     String(process.env.SECRET_KEY),
-        //     {expiresIn:"10m"},
-        // )
+       
 
         //2.generate 6 digit otp
         const otp = Math.floor(100000 + Math.random() * 900000).toString();
@@ -417,47 +414,9 @@ export const getProfilePage = async (req: Request, res: Response) => {
     }
 };
 
-
-
-export const updateProfileImages = async (req: Request, res: Response) => {
-    try {
-        
-        
-        const userId = req.session.user?.id;
-
-        if (!userId) {
-            return res.status(401).send("Unauthorized");
-        }
-
-        let profilePath = null;
-        let coverPath = null;
-
-        if (req.files && "profile_pic" in req.files) {
-            const file = (req.files as any)["profile_pic"][0];
-           
-            profilePath = `/uploads/profile/${file.filename}`;
-        }
-
-        if (req.files && "cover_pic" in req.files) {
-            const file = (req.files as any)["cover_pic"][0];
-            coverPath = `/uploads/cover/${file.filename}`;
-        }
-
-        await updateUserImages(userId, profilePath, coverPath);
-
-        res.redirect(`/${req.session.user?.username || `/hival`}`);
-
-    } catch (err) {
-        console.log(err);
-        res.status(500).send("Upload failed");
-    }
-};
-
-
-
 export const updateProfile = async (req: Request, res: Response) => {
     try {
-        const userId = req.session.user?.id;
+        const userId = req.session.user?.id ?? null;
 
         if (!userId) {
             return res.status(401).send("Unauthorized");
@@ -592,7 +551,7 @@ export const toggleLike = async (req: Request, res: Response) => {
     const userId = req.session.user?.id;
     const { tweetId } = req.body;
 
-    // 🔒 Not logged in
+    // Not logged in
     if (!userId) {
       return res.status(401).json({
         success: false,
@@ -647,7 +606,7 @@ export async function toggleFollow(req: any, res: any) {
         const { followingId } = req.body;
 
         if (!followerId) {
-            return res.json({ success: false });
+            return res.json({ success: false ,message: "Missing followingId"});
         }
 
         const alreadyFollowing = await isFollowing(followerId, followingId);
@@ -668,3 +627,49 @@ export async function toggleFollow(req: any, res: any) {
         res.json({ success: false });
     }
 }
+
+//add comment controller
+export const addCommentController = async (req: Request, res: Response) => {
+  try {
+    const userId = req.session.user?.id;
+    const { tweetId, content ,parentCommentId} = req.body;
+
+    if (!userId) {
+      return res.status(401).json({ success: false });
+    }
+
+    if (!tweetId || !content) { 
+      return res.status(400).json({ success: false });
+    }
+
+    await addComment(tweetId, userId, content,parentCommentId ||null);
+
+    res.json({
+      success: true
+    });
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ success: false });
+  }
+};
+
+
+//get comment controller
+
+export const getCommentsController = async (req: Request, res: Response) => {
+  try {
+    const { tweetId } = req.params;
+
+    const comments = await getCommentsByTweet(Number(tweetId));
+
+    res.json({
+      success: true,
+      comments
+    });
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ success: false });
+  }
+};

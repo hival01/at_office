@@ -18,13 +18,15 @@ import {
   verifyOTPController,
   emailBoxController,
   getProfilePage,
-  updateProfileImages,
   updateProfile,
   createTweet,
 getHomePage,
 logoutUser,
 toggleLike,
 toggleFollow,
+getCommentsController,
+addCommentController,
+
 
 } from "../controllers/authController";
 import { upload } from "../middlerwares/upload";
@@ -48,7 +50,8 @@ router.get('/mock-inbox', emailBoxController);
 
 
 router.get("/home", verifyUser, getHomePage);
-router.get("/:username", verifyUser, getProfilePage);
+router.get("/comments/:tweetId", verifyUser, getCommentsController);
+router.get("/:username", verifyUser, getProfilePage);  //always keepit last
 
 
 router.post("/check-email", checkEmailController);
@@ -59,10 +62,10 @@ router.post("/reset-password", resetPasswordController);
 router.post('/verify-otp', verifyOTPController);
 
 router.post(
-    "/tweet",
-    verifyUser,
-    upload.single("image"),
-    createTweet
+  "/tweet",
+  verifyUser,
+  upload.single("image"),
+  createTweet
 );
 
 router.post(
@@ -77,7 +80,8 @@ router.post(
 );
 
 router.post("/logout" , logoutUser);
-router.post("/like", toggleLike);
-router.post("/follow", toggleFollow);
+router.post("/like", verifyUser,toggleLike);
+router.post("/follow", verifyUser,toggleFollow);
+router.post("/comment", verifyUser, addCommentController);
 
 export default router;

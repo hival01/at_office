@@ -15,10 +15,7 @@ export async function checkEmail(email: string) {
 export async function registerUser(userName:string, email:string , password:string , dob:string){
     try{
         const connection = await db.getConnection();
-        const  query = `insert into users ( username,email,password_hash,dob) values(?,?,?,?);`
-
-        //logic for hasing the password using bcrpt
-        
+        const  query = `insert into users ( username,email,password_hash,dob) values(?,?,?,?);`   
         const [result] = await connection.execute(query, [userName,email,password,dob]);
         connection.release();
 

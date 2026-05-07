@@ -42,40 +42,51 @@ export async function addTweet(userId: number, content: string, imageUrl: string
     connection.release();
 }
 
-
-// export async function getAllTweets() {
-//     const connection = await db.getConnection();
-//     const [rows]: any = await connection.execute(`
-//         SELECT tweets.*, users.username, users.profile_pic_url
-//         FROM tweets
-//         JOIN users ON tweets.user_id = users.id
-//         ORDER BY tweets.created_at DESC
-//     `);
-
-//     connection.release();
-//     return rows;
-// }
-
 export async function getAllTweets(userId: number) {
     const connection = await db.getConnection();
 
+    // SELECT 
+    //     t.*,
+    //     u.username,
+    //     u.profile_pic_url,
+
+    //     COUNT( l.tweet_id) AS like_count,
+    //     COUNT(DISTINCT c.comment_id) AS comment_count,
+
+
+    //     MAX(CASE WHEN l.user_id = ? THEN 1 ELSE 0 END) AS is_liked
+
+    // FROM tweets t
+    // JOIN users u ON t.user_id = u.id
+    // LEFT JOIN likes l ON t.tweet_id = l.tweet_id
+    // left join comments c on t.tweet_id = c.tweet_id
+
+    // GROUP BY t.tweet_id
+    // ORDER BY t.created_at DESC
     const [rows]: any = await connection.execute(`
+
         SELECT 
-            t.*,
-            u.username,
-            u.profile_pic_url,
+          t.*,
+          u.username,
+          u.profile_pic_url,
 
-            COUNT(l.tweet_id) AS like_count,
+          -- ✅ correct like count
+          (SELECT COUNT(*) FROM likes WHERE tweet_id = t.tweet_id) AS like_count,
 
-            MAX(CASE WHEN l.user_id = ? THEN 1 ELSE 0 END) AS is_liked
+          -- ✅ correct comment count
+          (SELECT COUNT(*) FROM comments WHERE tweet_id = t.tweet_id) AS comment_count,
 
-        FROM tweets t
-        JOIN users u ON t.user_id = u.id
-        LEFT JOIN likes l ON t.tweet_id = l.tweet_id
+          -- ✅ correct like state
+          EXISTS (
+              SELECT 1 FROM likes 
+              WHERE tweet_id = t.tweet_id AND user_id = ?
+          ) AS is_liked
 
-        GROUP BY t.tweet_id
-        ORDER BY t.created_at DESC
-    `, [userId]);
+          FROM tweets t
+          JOIN users u ON t.user_id = u.id
+
+          ORDER BY t.created_at DESC;
+        `, [userId]);
     connection.release();
     return rows;
 }
@@ -226,4 +237,108 @@ export async function getFollowingCount(userId: number) {
     );
     conn.release();
     return rows[0].count;
+}
+
+
+//add comment into db
+export async function addComment(
+  tweetId: number,
+  userId: number,
+  content: string,
+  parentCommentId: number | null = null
+) {
+  const conn = await db.getConnection();
+
+  await conn.execute(
+    `INSERT INTO comments (tweet_id, user_id, content, parent_comment_id)
+     VALUES (?, ?, ?, ?)`,
+    [tweetId, userId, content, parentCommentId]
+  );
+
+  conn.release();
+}
+
+
+//get comments from database for perticuler tweet
+export async function getCommentsByTweet(tweetId: number) {
+  const conn = await db.getConnection();
+
+  const [rows]: any = await conn.execute(
+    `
+    SELECT 
+      c.comment_id,
+      c.content,
+      c.created_at,
+      c.parent_comment_id,
+      c.tweet_id,
+      u.username,
+      u.profile_pic_url
+    FROM comments c
+    JOIN users u ON c.user_id = u.id
+    WHERE c.tweet_id = ?
+    ORDER BY c.created_at ASC
+    `,
+    [tweetId]
+  );
+
+  conn.release();
+  // 🔥 Convert flat list → tree
+    const map: any = {};
+    const roots: any[] = [];
+
+    rows.forEach((c: any) => {
+      c.replies = [];
+      map[c.comment_id] = c;
+    });
+
+    // After this step:
+    // map = {
+    //   1: { id:1, replies: [] },
+    //   2: { id:2, replies: [] },
+    //   3: { id:3, replies: [] },
+    //   4: { id:4, replies: [] }
+    // }
+
+    rows.forEach((c: any) => {
+      if (c.parent_comment_id) {
+        map[c.parent_comment_id]?.replies.push(c);
+      } else {
+        roots.push(c);
+      }
+    });
+    // FINAL STRUCTURE
+    // roots = [
+    //     {
+    //       id: 1,
+    //       replies: [
+    //         {
+    //           id: 2,
+    //           replies: [
+    //             { id: 4, replies: [] }
+    //           ]
+    //         },
+    //         {
+    //           id: 3,
+    //           replies: []
+    //         }
+    //       ]
+    //     }
+    //   ]
+
+    return roots;
+
+}
+
+
+//get comment count foir perticuler tweet
+export async function getCommentCount(tweetId: number) {
+  const conn = await db.getConnection();
+
+  const [rows]: any = await conn.execute(
+    `SELECT COUNT(*) as count FROM comments WHERE tweet_id = ?`,
+    [tweetId]
+  );
+
+  conn.release();
+  return rows[0].count;
 }

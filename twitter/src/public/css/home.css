@@ -296,3 +296,114 @@ body {
 .like:hover .like-icon {
     stroke: #ea92bb;
 }
+
+
+
+
+
+
+
+/* ===== TWEET ACTIONS (LIKE / COMMENT / RETWEET) ===== */
+.tweet-actions {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-top: 10px;
+    color: #71767b;
+    font-size: 14px;
+}
+
+.action {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.action:hover {
+    color: #1d9bf0;
+}
+
+.action.like.liked {
+    color: #f91880; /* X pink like color */
+}
+
+/* ===== COMMENTS SECTION ===== */
+.comments-section {
+    margin-top: 12px;
+    border-top: 1px solid #2f3336;
+    padding-top: 12px;
+}
+
+/* ===== SINGLE COMMENT ===== */
+.comment {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+/* AVATAR */
+.comment img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+}
+
+/* COMMENT BODY */
+.comment-body {
+    background: #16181c;
+    padding: 8px 12px;
+    border-radius: 12px;
+    max-width: 100%;
+    word-break: break-word;
+}
+
+/* USERNAME */
+.comment-body b {
+    font-size: 14px;
+    display: block;
+    margin-bottom: 2px;
+}
+
+/* COMMENT TEXT */
+.comment-body p {
+    font-size: 14px;
+    line-height: 1.4;
+    margin: 0;
+}
+
+/* ===== REPLY BUTTON ===== */
+.reply-btn {
+    display: inline-block;
+    margin-top: 4px;
+    font-size: 12px;
+    color: #71767b;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.reply-btn:hover {
+    color: #1d9bf0;
+}
+
+/* ===== REPLY INPUT BOX ===== */
+.reply-box {
+    margin-top: 6px;
+}
+
+.reply-box input {
+    width: 100%;
+    padding: 6px 10px;
+    border-radius: 999px;
+    border: 1px solid #2f3336;
+    background: black;
+    color: white;
+    font-size: 13px;
+    outline: none;
+}
+
+.reply-box input:focus {
+    border-color: #1d9bf0;
+}
+/* you can extend if needed */
