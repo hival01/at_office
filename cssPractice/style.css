@@ -1406,3 +1406,483 @@ margin-top: 25px;
 .footer-bottom p{
     font-size:16px;
 }
+
+
+
+
+
+
+
+
+
+/* ================= MOBILE RESPONSIVE ================= */
+
+@media (max-width:768px){
+
+    .container{
+        width:92%;
+    }
+
+
+    /* ================= NAVBAR ================= */
+
+    .nav-wrapper{
+        flex-direction:column;
+        gap:20px;
+        text-align:center;
+    }
+
+    .nav-links{
+        flex-wrap:wrap;
+        justify-content:center;
+        gap:15px;
+    }
+
+
+
+    /* ================= HERO ================= */
+
+   .hero-section{
+        padding:40px 0 70px;
+    }
+
+    .hero-wrapper{
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        text-align:center;
+        gap:50px;
+    }
+
+
+    /* LEFT CONTENT */
+
+    .hero-left{
+        width:100%;
+    }
+
+    .small-title{
+        justify-content:center;
+        font-size:14px;
+    }
+
+    .hero-left h1{
+        font-size:42px;
+        line-height:1.2;
+
+        margin:20px 0;
+    }
+
+    .hero-para{
+        width:100%;
+        max-width:100%;
+
+        font-size:17px;
+        line-height:1.7;
+
+        margin-bottom:30px;
+    }
+
+
+
+    /* EMAIL FORM */
+
+    .hero-form{
+        width:100%;
+
+        display:flex;
+        flex-direction:column;
+
+        gap:15px;
+
+        border:none;
+        background:transparent;
+    }
+
+    .hero-form input{
+        width:100%;
+        height:55px;
+
+        border:2px solid black;
+        border-radius:8px;
+
+        padding:0 18px;
+
+        font-size:16px;
+    }
+
+    .hero-form button{
+        width:100%;
+        height:55px;
+
+        border-radius:8px;
+
+        font-size:16px;
+    }
+
+
+
+    /* BELOW MESSAGE */
+
+    .offer-message{
+        width:100%;
+
+        margin-top:18px;
+
+        font-size:14px;
+
+        display:flex;
+        flex-direction: column;
+        justify-content:center;
+        text-align:center;
+    }
+
+
+
+    /* RIGHT DESIGN AREA */
+
+    .hero-right{
+        width:100%;
+        height:420px;
+
+        position:relative;
+
+        display:flex;
+        justify-content:center;
+        align-items:center;
+    }
+
+
+
+    /* COMMON CIRCLE */
+
+    .circle{
+        position:absolute;
+    }
+
+
+
+    /* ORANGE CIRCLE */
+
+    .orange{
+        width:150px;
+        height:150px;
+
+        top:0;
+        right:20px;
+    }
+
+    .orange .textbox{
+        font-size:24px;
+
+        width:90px;
+
+        top:45px;
+        left:35px;
+    }
+
+
+
+    /* YELLOW CIRCLE */
+
+    .yellow{
+        width:150px;
+        height:150px;
+
+        top:90px;
+        right:90px;
+    }
+
+    .yellow .textbox{
+        font-size:24px;
+
+        width:90px;
+
+        top:45px;
+        left:25px;
+    }
+
+
+
+    /* GREEN BOX */
+
+    .green{
+        width:180px;
+        height:180px;
+
+        left:20px;
+        bottom:50px;
+    }
+
+    .green .textbox{
+        font-size:28px;
+    }
+
+
+
+    /* SMALL STICKER */
+
+    .new-image img{
+        width:80px;
+        height:80px;
+
+        left:210px;
+        bottom:20px;
+    }
+
+
+
+    /* ================= BANNER ================= */
+
+    .banner-item{
+        font-size:20px;
+        padding:0 20px;
+    }
+
+    .divider{
+        height:25px;
+    }
+
+
+
+    /* ================= SERVICES ================= */
+
+    .services-section{
+        padding:60px 0;
+    }
+
+    .services-top h2{
+        font-size:38px;
+    }
+
+    .services-top p{
+        font-size:18px;
+    }
+
+    .services-cards{
+        flex-direction:column;
+    }
+
+    .service-card{
+        width:100%;
+    }
+
+
+
+    /* ================= WORK ================= */
+
+    .work-section{
+        padding:60px 0;
+    }
+
+    .work-top h2{
+        font-size:38px;
+    }
+
+    .work-top p{
+        font-size:18px;
+    }
+
+    .work-cards{
+        flex-direction:column;
+    }
+
+    .work-content h3{
+        font-size:28px;
+    }
+
+    .work-content p{
+        font-size:18px;
+    }
+
+    .work-btn{
+        justify-content:center;
+        margin-top:50px;
+    }
+
+    .work-btn button{
+        width:100%;
+        font-size:18px;
+    }
+
+
+
+    /* ================= PRICING ================= */
+
+    .pricing-section{
+        padding:60px 0;
+    }
+
+    .pricing-top h2{
+        font-size:38px;
+    }
+
+    .pricing-top p{
+        font-size:18px;
+    }
+
+    .pricing-cards{
+        flex-direction:column;
+    }
+
+    .price-card{
+        width:100%;
+    }
+
+    .price-card h3{
+        font-size:30px;
+    }
+
+    .dollar{
+        font-size:55px;
+    }
+
+    .month{
+        font-size:18px;
+    }
+
+    .price-desc{
+        font-size:18px;
+    }
+
+    .price-card:hover{
+        transform:scale(1.02);
+    }
+
+
+
+    /* ================= TESTIMONIAL ================= */
+
+    .testimonial-section{
+        padding:60px 0;
+    }
+
+    .testimonial-wrapper{
+        flex-direction:column;
+        text-align:center;
+        gap:40px;
+    }
+
+    .profile-card{
+        justify-content:center;
+    }
+
+    .profile-card img{
+        width:90%;
+    }
+
+    .profile-btn{
+        left:50%;
+        transform:translateX(-50%);
+        bottom:-10px;
+    }
+
+    .testimonial-right h2{
+        font-size:24px;
+    }
+
+    .testimonial-right p{
+        font-size:16px;
+    }
+
+
+
+    /* ================= BLOG ================= */
+
+    .blog-section{
+        padding:60px 0;
+    }
+
+    .blog-top h2{
+        font-size:38px;
+    }
+
+    .blog-cards{
+        flex-direction:column;
+    }
+
+    .blog-content h3{
+        font-size:28px;
+    }
+
+    .blog-content p{
+        font-size:18px;
+    }
+
+
+
+    /* ================= NEWSLETTER ================= */
+
+    .newsletter-section{
+        padding:60px 0;
+    }
+
+    .newsletter-wrapper{
+        flex-direction:column;
+        gap:40px;
+    }
+
+    .newsletter-left h2{
+        font-size:38px;
+    }
+
+    .input-group input{
+        font-size:20px;
+    }
+
+    .newsletter-right{
+        text-align:center;
+        align-items:center;
+    }
+
+    .newsletter-right p{
+        font-size:18px;
+    }
+
+
+
+    /* ================= THANKYOU BANNER ================= */
+
+    .banner-content span{
+        font-size:22px;
+    }
+
+    .plus{
+        font-size:28px !important;
+    }
+
+
+
+    /* ================= FOOTER ================= */
+
+    .footer-section{
+        padding:60px 0;
+    }
+
+    .footer-logo h2{
+        font-size:40px;
+        text-align:center;
+    }
+
+    .footer-links{
+        flex-direction:column;
+        gap:35px;
+        text-align:center;
+    }
+
+    .footer-column a{
+        font-size:22px;
+    }
+
+    .footer-bottom{
+        flex-direction:column;
+        gap:20px;
+        text-align:center;
+    }
+
+    .footer-policy{
+        flex-direction:column;
+        gap:10px;
+    }
+
+}
